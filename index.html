@@ -1,6 +1,1082 @@
-<html>
-  <head>asistan</head>
-  <h1>selam</h1>
-  <body style="font: arial;">bu bir denemedir<br>özellikle bildiğim birkaç şeyi deniyorum</body>
-  <body style="background-color: lightblue;">
-</html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inşaat Yönetim Sistemi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #f1f5f9;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), #1d4ed8);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: var(--surface);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text);
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        /* Badges */
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+
+        /* Progress bars */
+        .progress-container {
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.5s ease;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .timeline-item.completed::before {
+            background: var(--success);
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success { background: var(--success); }
+        .notification.warning { background: var(--warning); }
+        .notification.error { background: var(--danger); }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .empty-state svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                text-align: center;
+                width: 100%;
+            }
+
+            header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🏗️ Inşaat Yönetim Sistemi</h1>
+            <p>Proje takibi, sevkiyat yönetimi ve ekip koordinasyonu için kapsamlı platform</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">📊 Ana Panel</button>
+            <button class="nav-tab" onclick="showTab('reminders')">⏰ Hatırlatıcılar</button>
+            <button class="nav-tab" onclick="showTab('shipments')">🚚 Sevkiyat</button>
+            <button class="nav-tab" onclick="showTab('requests')">📋 Ürün Talepleri</button>
+            <button class="nav-tab" onclick="showTab('tasks')">✅ İş Takibi</button>
+            <button class="nav-tab" onclick="showTab('projects')">📁 Proje Bilgileri</button>
+            <button class="nav-tab" onclick="showTab('team')">👥 Ekip Yönetimi</button>
+        </nav>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="value" id="stat-projects">0</div>
+                    <div class="label">Aktif Projeler</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="stat-completed">0</div>
+                    <div class="label">Tamamlanan İşler</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="stat-pending">0</div>
+                    <div class="label">Bekleyen Talepler</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="stat-shipments">0</div>
+                    <div class="label">Bu Aya Sevkiyat</div>
+                </div>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>📈 Proje Durumu</h3>
+                    <p id="project-status-text">Projeler yükleniyor...</p>
+                </div>
+                <div class="card">
+                    <h3>⚠️ Önemli Hatırlatmalar</h3>
+                    <div id="important-reminders">
+                        <p class="empty-state">Hatırlatma yok</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-grid" style="margin-top: 20px;">
+                <div class="card">
+                    <h3>🔥 Son Eklendiken İşler</h3>
+                    <div id="recent-tasks" class="timeline"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reminders Section -->
+        <section id="reminders" class="section">
+            <div class="card-grid">
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3>⏰ Hatırlatma Ekle</h3>
+                    <form onsubmit="addReminder(event)">
+                        <div class="form-group">
+                            <label>Başlık *</label>
+                            <input type="text" id="reminder-title" class="form-control" required placeholder="Örn: Çimento sevkiyatı için hazırlık">
+                        </div>
+                        <div class="form-group">
+                            <label>Tarih ve Saat *</label>
+                            <input type="datetime-local" id="reminder-date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea id="reminder-desc" class="form-control" rows="3" placeholder="Detaylı açıklama (opsiyonel)"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Hatırlatma Ekle</button>
+                    </form>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h3>Tüm Hatırlatmalar</h3>
+                <div id="reminders-list">
+                    <p class="empty-state">Henüz hatırlatma yok. Yukarıdan ekleyin.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <button onclick="toggleReminderSound()" class="btn btn-warning" id="sound-toggle">🔊 Bildirimleri Aktif Et</button>
+            </div>
+        </section>
+
+        <!-- Shipments Section -->
+        <section id="shipments" class="section">
+            <div class="card-grid">
+                <div class="card">
+                    <h3>📥 Sevkiyat Girişi</h3>
+                    <form onsubmit="addShipment(event)">
+                        <div class="form-group">
+                            <label>Malzeme/Ürün *</label>
+                            <input type="text" id="shipment-product" class="form-control" required placeholder="Örn: Çimento, demir, beton...">
+                        </div>
+                        <div class="form-group">
+                            <label>Miktar</label>
+                            <input type="text" id="shipment-amount" class="form-control" placeholder="Örn: 50 ton, 100 adet...">
+                        </div>
+                        <div class="form-group">
+                            <label>Tedarikçi</label>
+                            <input type="text" id="shipment-supplier" class="form-control" placeholder="Tedarikçi adı">
+                        </div>
+                        <div class="form-group">
+                            <label>Beklenen Tarih *</label>
+                            <input type="date" id="shipment-date" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Sevkiyat Ekle</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>📤 Sevkiyat Çıkışı (Malzeme Kullanımı)</h3>
+                    <form onsubmit="removeShipment(event)">
+                        <div class="form-group">
+                            <label>Malzeme/Ürün *</label>
+                            <input type="text" id="remove-product" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Kullanılan Miktar *</label>
+                            <input type="text" id="remove-amount" class="form-control" required placeholder="Kullanılan miktar">
+                        </div>
+                        <button type="submit" class="btn btn-danger">Sevkiyattan Çıkar</button>
+                    </form>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3>🚚 Aktif Sevkiyatlar</h3>
+                    <div id="shipments-list">
+                        <p class="empty-state">Henüz sevkiyat yok. Yukarıdan ekleyin.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Requests Section -->
+        <section id="requests" class="section">
+            <div class="card-grid">
+                <div class="card">
+                    <h3>📋 Yeni Talep Oluştur</h3>
+                    <form onsubmit="addRequest(event)">
+                        <div class="form-group">
+                            <label>Talep Eden Personel *</label>
+                            <input type="text" id="requester-name" class="form-control" required placeholder="Ad Soyad">
+                            <small style="color: var(--text-light);">ID numaranızı girmeyi unutmayın</small>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Numarası *</label>
+                            <input type="number" id="requester-id" class="form-control" required placeholder="Örn: 1001">
+                        </div>
+                        <div class="form-group">
+                            <label>Talep Konusu *</label>
+                            <select id="request-type" class="form-control" required onchange="updateRequestMaterial()">
+                                <option value="">Seçiniz...</option>
+                                <option value="material">Malzeme Talebi</option>
+                                <option value="equipment">Ekipman Talebi</option>
+                                <option value="service">Hizmet Talebi</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="request-material-group" style="display: none;">
+                            <label>Malzeme Türü *</label>
+                            <select id="request-material-type" class="form-control">
+                                <option value="çimento">Çimento</option>
+                                <option value="demir">Demir/Çelik</option>
+                                <option value="beton">Beton</option>
+                                <option value="kiremit">Kiremit</option>
+                                <option value="cam">Cam</option>
+                                <option value="boya">Boya</option>
+                                <option value="elektrik-malzemesi">Elektrik Malzemesi</option>
+                                <option value="kanalizasyon">Kanalizasyon</option>
+                                <option value="diğer">Diğer</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="request-equipment-group" style="display: none;">
+                            <label>Ekipman Türü *</label>
+                            <select id="request-equipment-type" class="form-control">
+                                <option value="karici">Karıştırıcı</option>
+                                <option value="kaldirgaci">Kaldıraç/Kran</option>
+                                <option value="elektrik-aleti">Elektrik Aleti</option>
+                                <option value="demirci-ekipman">Demirci Ekipmanı</option>
+                                <option value="diğer">Diğer</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Miktar</label>
+                            <input type="text" id="request-quantity" class="form-control" placeholder="Örn: 100 ton, 50 adet...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea id="request-description" class="form-control" rows="3" placeholder="Detaylı açıklama (opsiyonel)"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Talep Oluştur</button>
+                    </form>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3>📋 Talep Durumları</h3>
+                    <div id="requests-list">
+                        <p class="empty-state">Henüz talep yok.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3>👤 Talebi Onayla / Reddet</h3>
+                    <form onsubmit="respondToRequest(event)">
+                        <div id="request-response-container" style="display: none;">
+                            <div class="form-group">
+                                <label>Talep Seçilmiştir:</label>
+                                <p id="selected-request-text" style="font-weight: 500; margin: 10px 0;"></p>
+                            </div>
+                            <select id="response-type" class="form-control">
+                                <option value="approve">✅ Onayla</option>
+                                <option value="reject">❌ Reddet</option>
+                            </select>
+                            <div class="form-group">
+                                <label>Teknik Not (Opsiyonel)</label>
+                                <textarea id="response-note" class="form-control" rows="2" placeholder="Teknik gerekçenizi belirtin"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Cevap Ver</button>
+                            <button type="button" onclick="document.getElementById('request-response-container').style.display='none'" class="btn btn-danger">İptal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tasks Section -->
+        <section id="tasks" class="section">
+            <div class="card-grid">
+                <div class="card">
+                    <h3>➕ Yeni İş Ekle</h3>
+                    <form onsubmit="addTask(event)">
+                        <div class="form-group">
+                            <label>İş Başlığı *</label>
+                            <input type="text" id="task-title" class="form-control" required placeholder="Örn: Çatı işleri">
+                        </div>
+                        <div class="form-group">
+                            <label>Kategori *</label>
+                            <select id="task-category" class="form-control" required>
+                                <option value="zemin-isleri">Zemin İşleri</option>
+                                <option value="temel">Temel İşleri</option>
+                                <option value="duvar">Duvar/Kaplama</option>
+                                <option value="tavan">Tavan İşleri</option>
+                                <option value="elektrik">Elektrik İşleri</option>
+                                <option value="mekanik">Mekanik/Su Tesisatı</option>
+                                <option value="kanalizasyon">Kanalizasyon</option>
+                                <option value="kaplama">Kaplama/Mozaik</option>
+                                <option value="ceiling">Tavan İşleri</option>
+                                <option value="diğer">Diğer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Durum *</label>
+                            <select id="task-status" class="form-control" required>
+                                <option value="planned">📋 Planlanan</option>
+                                <option value="in-progress">🔨 Devam Eden</option>
+                                <option value="pending-review">👁️ İncelemeyi Bekliyor</option>
+                                <option value="completed">✅ Tamamlandı</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tahmini Bitiş Tarihi *</label>
+                            <input type="date" id="task-due-date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Başlayan Personel</label>
+                            <input type="text" id="task-personnel" class="form-control" placeholder="Personel adı">
+                        </div>
+                        <button type="submit" class="btn btn-success">İş Ekle</button>
+                    </form>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3>✅ İş Takibi Listesi</h3>
+                    <div id="tasks-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <div class="card-grid">
+                <div class="card">
+                    <h3>📁 Yeni Proje Ekle</h3>
+                    <form onsubmit="addProject(event)">
+                        <div class="form-group">
+                            <label>Proje Adı *</label>
+                            <input type="text" id="project-name" class="form-control" required placeholder="Örn: Ofis Binası A Blok">
+                        </div>
+                        <div class="form-group">
+                            <label>Başlangıç Tarihi *</label>
+                            <input type="date" id="project-start-date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tahmini Bitiş Tarihi *</label>
+                            <input type="date" id="project-end-date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bütçe (₺)</label>
+                            <input type="number" id="project-budget" class="form-control" placeholder="Tahmini bütçe">
+                        </div>
+                        <div class="form-group">
+                            <label>Müşteri / Sahibi</label>
+                            <input type="text" id="project-client" class="form-control" placeholder="Müşteri adı">
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea id="project-description" class="form-control" rows="3" placeholder="Proje detayları"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Projeye Ekle</button>
+                    </form>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3>📋 Proje Detayları</h3>
+                    <div id="projects-list">
+                        <p class="empty-state">Henüz proje yok.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1; margin-top: 20px;">
+                    <h3>📊 Proje İlerleme Özeti</h3>
+                    <div id="projects-progress"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section id="team" class="section">
+            <div class="card-grid">
+                <div class="card">
+                    <h3>👤 Personel Ekle</h3>
+                    <form onsubmit="addPersonnel(event)">
+                        <div class="form-group">
+                            <label>Ad Soyad *</label>
+                            <input type="text" id="personnel-name" class="form-control" required placeholder="Örn: Ali Yılmaz">
+                        </div>
+                        <div class="form-group">
+                            <label>ID Numarası *</label>
+                            <input type="number" id="personnel-id" class="form-control" required placeholder="Örn: 1001">
+                        </div>
+                        <div class="form-group">
+                            <label>Görev Bölümü *</label>
+                            <select id="personnel-role" class="form-control" required>
+                                <option value="saha-isgari">Saha İşçisi</option>
+                                <option value="muhendis">Mühendis</option>
+                                <option value="demirci">Demirci</option>
+                                <option value="elektrikci">Elektrikçi</option>
+                                <option value="su-tesisatcisi">Su Tesisatçısı</option>
+                                <option value="isletme">İşletme Personeli</option>
+                                <option value="yonetici">Yönetici</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Araç/Kiralama (Opsiyonel)</label>
+                            <input type="text" id="personnel-vehicle" class="form-control" placeholder="Örn: Ford Transit, Yamaha motosiklet...">
+                        </div>
+                        <button type="submit" class="btn btn-success">Personel Ekle</button>
+                    </form>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3>👥 Personel Listesi</h3>
+                    <div id="personnel-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal -->
+        <div class="modal-overlay" id="modal-overlay">
+            <div class="modal">
+                <button class="modal-close" onclick="closeModal()">×</button>
+                <div id="modal-content"></div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div class="notification" id="notification"></div>
+
+    </div>
+
+    <script>
+        // ==================== DATA STORE ====================
+        const DEFAULT_DATA = {
+            reminders: [],
+            shipments: [],
+            requests: [],
+            tasks: [],
+            projects: [],
+            personnel: []
+        };
+
+        let data = loadFromLocalStorage() || JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            renderAll();
+            setupDateInputs();
+            checkForExpiredReminders();
+            
+            // Auto-save interval
+            setInterval(saveToLocalStorage, 10000);
+            
+            console.log('✅ Inşaat Yönetim Sistemi başlatıldı');
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('construction_app_data');
+            return saved ? JSON.parse(saved) : null;
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('construction_app_data', JSON.stringify(data));
+        }
+
+        // ==================== NAVIGATION ====================
+        function showTab(tabId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            renderAll(); // Re-render to update stats
+        }
+
+        // ==================== DASHBOARD ====================
+        function renderDashboard() {
+            // Stats
+            document.getElementById('stat-projects').textContent = data.projects.length;
+            
+            const completedTasks = data.tasks.filter(t => t.status === 'completed').length;
+            document.getElementById('stat-completed').textContent = completedTasks;
+            
+            const pendingRequests = data.requests.filter(r => r.status === 'pending').length;
+            document.getElementById('stat-pending').textContent = pendingRequests;
+            
+            const currentMonthShipments = data.shipments.filter(s => {
+                const d = new Date(s.date);
+                return d.getMonth() === new Date().getMonth() && 
+                       d.getFullYear() === new Date().getFullYear();
+            }).length;
+            document.getElementById('stat-shipments').textContent = currentMonthShipments;
+
+            // Project Status Text
+            if (data.projects.length > 0) {
+                const activeProjects = data.projects.filter(p => {
+                    const start = new Date(p.startDate);
+                    const end = new Date(p.endDate);
+                    return !start || !end || 
+                           (start <= new Date() && end >= new Date());
+                }).length;
+                document.getElementById('project-status-text').textContent = 
+                    `${activeProjects} aktif proje çalışıyor.`;
+            } else {
+                document.getElementById('project-status-text').textContent = 'Aktif proje yok.';
+            }
+
+            // Important Reminders
+            const now = new Date();
+            const importantReminders = data.reminders.filter(r => {
+                if (!r.date) return false;
+                const rDate = new Date(r.date);
+                const diffHours = (rDate - now) / (1000 * 60 * 60);
+                return diffHours <= 24 && diffHours >= -72; // Last 3 days to tomorrow
+            }).slice(0, 5);
+
+            const container = document.getElementById('important-reminders');
+            if (importantReminders.length > 0) {
+                container.innerHTML = importantReminders.map(r => createReminderItem(r)).join('');
+            } else {
+                container.innerHTML = '<p class="empty-state">Yakın zamanda önemli hatırlatma yok.</p>';
+            }
+
+            // Recent Tasks
+            const recentTasks = data.tasks.slice(-8).reverse();
+            const timeline = document.getElementById('recent-tasks');
+            if (recentTasks.length > 0) {
+                timeline.innerHTML = recentTasks.map(t => `
+                    <div class="timeline-item ${t.status === 'completed' ? 'completed' : ''}">
+                        <div>
+                            <strong>${t.title}</strong><br>
+                            <small style="color: var(--text-light);">${formatDate(t.dueDate)}</small>
+                        </div>
+                        <span class="badge badge-${getStatusBadgeClass(t.status)}">
+                            ${getStatusBadgeText(t.status)}
+                        </span>
+                    </div>
+                `).join('');
+            } else {
+                timeline.innerHTML = '<p class="empty-state">Yakın zamanda eklenen iş yok.</p>';
+            }
+        }
+
+        // ==================== REMINDERS ====================
+        function addReminder(e) {
+            e.preventDefault();
+            
+            const reminder = {
+                id: Date.now(),
+                title: document.getElementById('reminder-title').value,
+                date: document.getElementById('reminder-date').value.replace('T', ' '),
+                description: document.getElementById('reminder-desc').value || '',
+                notified: false
+            };
+
+            data.reminders.push(reminder);
+            saveAndRender();
+            
+            showNotification('Hatırlatma eklendi!', 'success');
+            e.target.reset();
+        }
+
+        function createReminderItem(reminder) {
+            const isPast = new Date(reminder.date) < new Date() && !reminder.notified;
+            return `
+                <div style="background: ${isPast ? '#fee2e2' : 'white'}; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <strong>${reminder.title}</strong><br>
+                            ${isPast ? '<span style="color: var(--danger);">GEÇMİŞ</span>' : ''}
+                        </div>
+                        <div style="text-align: right;">
+                            <small style="display: block;">${formatDate(reminder.date)}</small>
+                            ${reminder.description ? `<small style="color: var(--text-light);">${escapeHtml(reminder.description.substring(0, 80))}...</small>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleReminderSound() {
+            const soundEnabled = localStorage.getItem('reminder_sound_enabled');
+            localStorage.setItem('reminder_sound_enabled', !soundEnabled);
+            
+            const btn = document.getElementById('sound-toggle');
+            btn.textContent = soundEnabled 
+                ? '🔊 Bildirimleri Aktif Et' 
+                : '🔕 Bildirimleri Devre Dışı Bırak';
+            
+            showNotification(soundEnabled ? 'Bildirimler aktif edildi' : 'Bildirimler devre dışı bırakıldı');
+        }
+
+        function checkForExpiredReminders() {
+            if (localStorage.getItem('reminder_sound_enabled') === 'true') {
+                const now = new Date();
+                data.reminders.forEach(r => {
+                    if (r.date) {
+                        const rDate = new Date(r.date);
+                        if (Math.abs(rDate - now) < 2000 && !r.notified) {
+                            playSound();
+                            showNotification(`⏰ ${escapeHtml(r.title)}`, 'warning');
+                            r.notified = true;
+                        }
+                    }
+                });
+            }
+        }
+
+        function playSound() {
+            try {
+                const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+                audio.play().catch(() => {});
+            } catch (e) {}
+        }
+
+        // ==================== SHIPMENTS ====================
+        function addShipment(e) {
+            e.preventDefault();
+            
+            const shipment = {
+                id: Date.now(),
+                product: document.getElementById('shipment-product').value,
+                amount: document.getElementById('shipment-amount').value,
+                supplier: document.getElementById('shipment-supplier').value,
+                date: document.getElementById('shipment-date').value
+            };
+
+            data.shipments.push(shipment);
+            
+            // Reset form
+            e.target.reset();
+            
+            saveAndRender();
+            showNotification('Sevkiyat kaydedildi!', 'success');
+        }
+
+        function removeShipment(e) {
+            e.preventDefault();
+            
+            const product = document.getElementById('remove-product').value.toLowerCase().trim();
+            const amount = document.getElementById('remove-amount').value;
+            
+            let removed = false;
+            data.shipments = data.shipments.filter(s => {
+                if (!removed && s.product.toLowerCase().includes(product)) {
+                    alert(`🚫 ${s.product} (${s.amount}) sevkiyatından ${amount} miktarı çıkarıldı.`);
+                    removed = true;
+                }
+                return !removed;
+            });
+
+            saveAndRender();
+            showNotification('Sevkiyattan çıkarma işlemi tamamlandı', 'success');
+            
+            e.target.reset();
+        }
+
+        // ==================== REQUESTS ====================
+        function addRequest(e) {
+            e.preventDefault();
+            
+            const type = document.getElementById('request-type').value;
+            let quantity = document.getElementById('request-quantity').value;
+            
+            const request = {
+                id: Date.now(),
+                requesterName: document.getElementById('requester-name').value,
+                requesterId: document.getElementById('requester-id').value,
+                type: type,
+                materialType: document.getElementById('request-material-type').value,
+                equipmentType: document.getElementById('request-equipment-type').value,
+                quantity: quantity,
+                description: document.getElementById('request-description').value || '',
+                status: 'pending',
+                responseNote: null,
+                createdAt: new Date().toISOString()
+            };
+
+            data.requests.push(request);
+            
+            saveAndRender();
+            showNotification('Talep oluşturuldu!', 'success');
+            e.target.reset();
+        }
+
+        function updateRequestMaterial() {
+            const type = document.getElementById('request-type').value;
+            const materialGroup = document.getElementById('request-material-group');
+            const equipmentGroup = document.getElementById('request-equipment-group');
+            
+            materialGroup.style.display = type === 'material' ? 'block' : 'none';
+            equipmentGroup.style.display = type === 'equipment' ? 'block' : 'none';
+        }
+
+        function respondToRequest(e) {
+            e.preventDefault();
+            
+            const responseId = Date.now();
+            const responseType = document.getElementById('response-type').value;
+            const responseNote = document.getElementById('response-note').value;
+            
+            const requestId = parseInt(prompt('Onaylanacak Talep ID:', ''));
+            if (!requestId) return;
+
+            const requestIndex = data.requests.findIndex(r => r.id === requestId);
+            if (requestIndex === -1) {
+                alert('Talep bulunamadı!');
+                return;
+            }
+
+            data.requests
