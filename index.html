@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hansa | İç Mimarlık & Tasarım Stüdyosu</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+    <title>Hansa | Lüks İç Mimari Tasarım Çözümleri</title>
+
+    <!-- Google Fonts: Profesyonel ve modern bir font seçimi -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+
     <style>
+        /* ------------------------------------- */
+        /* TEMEL STİLLER VE GLOBAL RESETLER */
+        /* ------------------------------------- */
         :root {
-            --bg-color: #0f0f0f;
-            --surface-color: #1a1a1a;
-            --text-main: #f3f0ec;
-            --text-muted: #9e9a93;
-            --accent: #c5a880;
-            --accent-hover: #d4bc98;
-            --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            /* Ana Renk Paleti */
+            --color-primary: #5c4033; /* Koyu Kahve / Antrasit (Ana Başlıklar) */
+            --color-secondary: #b88601; /* Altın/Bronz Vurgu Rengi */
+            --color-light-bg: #fcf9f7; /* Krem Beyaz Zemin */
+            --color-text: #333;
+            --color-dark-text: #1a1a1a;
+            --transition-speed: 0.3s;
         }
 
         * {
@@ -26,452 +28,580 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow-x: hidden;
+            font-family: 'Raleway', sans-serif;
+            color: var(--color-text);
+            background-color: var(--color-light-bg);
             line-height: 1.6;
         }
 
-        h1, h2, h3, .serif {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 400;
+        a {
+            text-decoration: none;
+            color: var(--color-secondary);
+            transition: color var(--transition-speed);
         }
 
-        /* Navbar */
-        header {
+        a:hover {
+            color: var(--color-primary);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--color-dark-text);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Genel Bölüm Stil Düzenlemesi */
+        section {
+            padding: 80px 5% 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            opacity: 0; /* JS ile görünür olacak */
+            transform: translateY(20px);
+            transition: opacity var(--transition-speed) ease-out, transform var(--transition-speed) ease-out;
+        }
+
+        /* JS Tarafından Görünür Yapılan Öğeler */
+        .visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+
+        /* ------------------------------------- */
+        /* HEADER & NAVBAR */
+        /* ------------------------------------- */
+
+        .header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
+            z-index: 1000;
+            background-color: rgba(252, 249, 247, 0.9); /* Hafif şeffaf arka plan */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 2rem 5%;
-            z-index: 1000;
-            background: linear-gradient(to bottom, rgba(15,15,15,0.9), transparent);
-            backdrop-filter: blur(5px);
-            transition: var(--transition);
         }
 
         .logo {
+            font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
-            letter-spacing: 0.2rem;
+            letter-spacing: 3px;
+            color: var(--color-dark-text);
             text-transform: uppercase;
-            color: var(--text-main);
-            text-decoration: none;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            letter-spacing: 0.1rem;
+        .nav a {
+            margin-left: 30px;
+            font-weight: 500;
             text-transform: uppercase;
-            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+            transition: all var(--transition-speed);
+            color: #5c4033; /* Menü rengi */
         }
 
-        .nav-links a:hover {
-            color: var(--accent);
+        .nav a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background-color: var(--color-secondary);
+            transition: width var(--transition-speed) ease, background-color var(--transition-speed);
+            position: absolute;
+            bottom: -5px;
+            left: 0;
         }
 
-        /* Hero Section */
-        .hero {
-            height: 100vh;
+        .nav a:hover::after {
+            width: 100%;
+            background-color: var(--color-secondary);
+        }
+
+
+        /* ------------------------------------- */
+        /* HERO SECTION (Ana Banner) */
+        /* ------------------------------------- */
+
+        #hero {
+            height: 100vh; /* Tam ekran yüksekliği */
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
+            justify-content: space-between;
             padding: 0 5%;
-            text-align: center;
+            background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('https://via.placeholder.com/1920x1080?text=Lüks+İç+Mimarî+Görseli');
+            background-size: cover;
+            background-position: center;
         }
 
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
-            filter: brightness(0.4);
-            transform: scale(1.05);
-            transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: -1;
-        }
-
-        .hero.loaded .hero-bg {
-            transform: scale(1);
+        .hero-content {
+            max-width: 50%;
+            animation: slideInLeft 1s ease-out; /* Animasyon */
         }
 
         .hero-content h1 {
-            font-size: clamp(3rem, 6vw, 6rem);
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.02em;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeUp 1s 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: var(--color-dark-text);
         }
 
         .hero-content p {
-            font-size: clamp(1rem, 1.5vw, 1.25rem);
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 2.5rem;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeUp 1s 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            max-width: 700px;
+            opacity: 0.85;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            border: 1px solid var(--accent);
-            color: var(--text-main);
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.15rem;
-            font-size: 0.8rem;
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeUp 1s 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--accent);
-            transition: var(--transition);
-            z-index: -1;
-        }
-
-        .btn:hover::before {
-            left: 0;
-        }
-
-        .btn:hover {
-            color: var(--bg-color);
-        }
-
-        /* Sections General */
-        section {
-            padding: 8rem 5%;
-        }
-
-        .section-header {
-            margin-bottom: 5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 1.5rem;
-        }
-
-        .section-header h2 {
-            font-size: clamp(2.5rem, 4vw, 4rem);
-        }
-
-        .section-header span {
-            color: var(--accent);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            letter-spacing: 0.2rem;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
-
-        /* Projects Section */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-        }
-
-        .project-card {
+        .cta-button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1rem;
             cursor: pointer;
-            group: true;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color var(--transition-speed) ease, transform var(--transition-speed);
+            box-shadow: 0 4px 15px rgba(92, 64, 51, 0.3);
         }
 
-        .project-img-wrapper {
-            width: 100%;
-            height: 450px;
+        .cta-button:hover {
+            background-color: #7b685a; /* Biraz aydınlatılmış kahve */
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(92, 64, 51, 0.4);
+        }
+
+        /* ------------------------------------- */
+        /* PORTFOLYO BÖLÜMÜ (Grid Düzen) */
+        /* ------------------------------------- */
+
+        #portfolio h2 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 60px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .portfolio-card {
+            background-color: white;
+            border-radius: 8px;
             overflow: hidden;
-            position: relative;
-            background: var(--surface-color);
-            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            cursor: pointer;
+}
+
+        /* Animasyon Efekti */
+        .portfolio-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(92, 64, 51, 0.2);
         }
 
-        .project-img-wrapper img {
+        .card-image {
             width: 100%;
-            height: 100%;
+            height: 300px; /* Sabit yükseklik */
             object-fit: cover;
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            filter: brightness(0.9);
+            display: block;
+            transition: transform var(--transition-speed) ease;
         }
 
-        .project-card:hover img {
-            transform: scale(1.06);
-            filter: brightness(1);
+        .portfolio-card:hover .card-image {
+            transform: scale(1.05);
         }
 
-        .project-info h3 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
+        .card-info {
+            padding: 20px;
         }
 
-        .project-info p {
-            color: var(--text-muted);
+        .card-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .card-info p {
+            color: #777;
             font-size: 0.95rem;
         }
 
-        /* About Section */
-        .about-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6rem;
-            align-items: center;
+
+        /* ------------------------------------- */
+        /* HİZMETLER BÖLÜMÜ (Flex/Grid) */
+        /* ------------------------------------- */
+
+        #hizmetler h2 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 50px;
         }
 
-        .about-text h3 {
-            font-size: clamp(2rem, 3vw, 3rem);
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
+        .service-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: space-between;
         }
 
-        .about-text p {
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            font-size: 1.05rem;
+        .service-item {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            flex-basis: calc(33% - 26.67%); /* Üç sütun için */
+            min-width: 280px;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
         }
 
-        .about-image {
-            height: 600px;
-            background: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1000&q=80') no-repeat center center/cover;
-            position: relative;
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(92, 64, 51, 0.15);
         }
 
-        /* Contact Section */
-        .contact-container {
-            max-width: 800px;
-            margin: 0 auto;
+        .icon {
+            color: var(--color-secondary);
+            font-size: 2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .service-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+
+        /* ------------------------------------- */
+        /* İLETİŞİM BÖLÜMÜ (Form ve CTA) */
+        /* ------------------------------------- */
+
+        #iletisim {
+            background-color: #e8e3df; /* Hafif gri alt zemin */
             text-align: center;
         }
 
-        .contact-container h3 {
-            font-size: clamp(2.5rem, 4vw, 4.5rem);
-            margin-bottom: 1.5rem;
+        #iletisim h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
         }
 
-        .contact-container p {
-            color: var(--text-muted);
-            margin-bottom: 3rem;
-            font-size: 1.1rem;
+        #contact-form {
+            max-width: 600px;
+            margin: 30px auto 0;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
         }
 
-        .contact-email {
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
-            color: var(--accent);
-            text-decoration: none;
-            border-bottom: 1px solid var(--accent);
-            padding-bottom: 0.3rem;
-            transition: var(--transition);
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
         }
 
-        .contact-email:hover {
-            color: var(--text-main);
-            border-color: var(--text-main);
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color var(--transition-speed);
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--color-secondary);
+            outline: none;
+            box-shadow: 0 0 5px rgba(184, 134, 1, 0.2);
         }
 
         /* Footer */
         footer {
-            padding: 3rem 5%;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            background-color: var(--color-dark-text);
+            color: white;
+            padding: 40px 5%;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .footer-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
-            color: var(--text-muted);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .copyright span {
+             font-size: 0.9rem;
+             color: #aaa;
         }
 
-        /* Animations */
-        @keyframes fadeUp {
+
+        /* ------------------------------------- */
+        /* RESPONSIVENESS (Mobil Uyumu) */
+        /* ------------------------------------- */
+        @media (max-width: 1024px) {
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+
+            .service-item {
+                flex-basis: calc(50% - 20px); /* İki sütuna düşürme */
+            }
+        }
+
+        @media (max-width: 768px) {
+             /* Navbar yapısını mobil için basitleştirme */
+            .header {
+                flex-direction: column;
+                padding: 15px 3%;
+                text-align: center;
+            }
+            .nav {
+                margin-top: 15px;
+                display: flex;
+                gap: 20px;
+            }
+            .nav a {
+                margin-left: 0 !important;
+            }
+
+            /* Hero Düzeni */
+            #hero {
+                flex-direction: column;
+                text-align: center;
+                height: auto; /* Boyutlandırmayı esnek yapma */
+                padding: 150px 5%;
+            }
+
+            .hero-content {
+                max-width: 100%;
+                align-items: center;
+            }
+
+             /* Service ve Portfolyo Düzeni */
+            .service-item, .portfolio-card {
+                flex-basis: 100%; /* Tek sütuna düşürme */
+            }
+        }
+
+
+        /* ------------------------------------- */
+        /* KEYFRAMES (Animasyonlar) */
+        /* ------------------------------------- */
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
             to {
                 opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .about-container {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-            .nav-links {
-                display: none;
-            }
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
+                transform: translateX(0);
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header / Navbar -->
-    <header id="header">
-        <a href="#" class="logo">Hansa</a>
-        <ul class="nav-links">
-            <li><a href="#projeler">Projeler</a></li>
-            <li><a href="#hakkimizda">Stüdyo</a></li>
-            <li><a href="#iletisim">İletişim</a></li>
-        </ul>
+    <!-- 1. HEADER / NAVBAR -->
+    <header class="header">
+        <div class="logo">HANSA</div>
+        <nav class="nav">
+            <a href="#hero">Anasayfa</a>
+            <a href="#hizmetler">Hizmetlerimiz</a>
+            <a href="#portfolio">Portfolyo</a>
+            <a href="#iletisim">İletişim</a>
+        </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-bg"></div>
+    <!-- 2. HERO SECTION -->
+    <section id="hero" class="visible">
         <div class="hero-content">
-            <h1>Mekana Ruh Katan Tasarımlar</h1>
-            <p>Hansa, lüksü, sadeliği ve işlevselliği harmanlayarak kişiye özel mimari deneyimler inşa eder.</p>
-            <a href="#projeler" class="btn">Keşfet</a>
+            <h1>Hayalinizdeki Mekânı Gerçeğe Dönüştürüyoruz.</h1>
+            <p>Hansa, estetik zarafeti işlevsellik ve kusursuz mühendislikle buluşturarak yaşam alanlarını sanat eserine dönüştürür.</p>
+            <button class="cta-button" onclick="document.getElementById('portfolio').scrollIntoView({behavior: 'smooth'})">Projelerimizi Keşfet</button>
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section id="projeler">
-        <div class="section-header reveal">
-            <h2>Seçkin Projeler</h2>
-            <span>01 / Portfolyo</span>
+    <!-- 3. HİZMETLER BÖLÜMÜ -->
+    <section id="hizmetler" class="visible">
+        <h2>Sunduğumuz Tasarım Çözümleri</h2>
+        <div class="service-grid">
+            
+            <!-- Hizmet Öğesi 1: Mekân Planlaması -->
+            <div class="service-item visible" data-section="hizmetler">
+                <span class="icon">&#9733;</span> <!-- Yıldız ikonu yerine font ikon kullanılabilir -->
+                <h3>Kapsamlı Mekân Analizi</h3>
+                <p>İhtiyaçlarınızdan yola çıkarak, her köşeyi en verimli şekilde kullanabileceğiniz ergonomik ve estetik planlar oluşturuyoruz.</p>
+            </div>
+
+            <!-- Hizmet Öğesi 2: Dekorasyon & Stil Danışmanlığı -->
+            <div class="service-item visible" data-section="hizmetler">
+                <span class="icon">&#127940;</span> <!-- Canlı ikonu yerine font ikon kullanılabilir -->
+                <h3>Renk ve Malzeme Paleti</h3>
+                <p>Mekan ruhunu yansıtan özel renk kombinasyonları, lüks dokulu malzemeler seçimi ile benzersiz bir atmosfer yaratıyoruz.</p>
+            </div>
+
+            <!-- Hizmet Öğesi 3: Proje Yönetimi & Uygulama -->
+            <div class="service-item visible" data-section="hizmetler">
+                <span class="icon">&#128065;</span> <!-- Plan ikonu yerine font ikon kullanılabilir -->
+                <h3>Uçtan Uca Uygulama</h3>
+                <p>Tasarım aşamasından bitmiş anahtarlara kadar tüm süreçleri titizlikle yöneterek, zamanında ve bütçe dahilinde kusursuz sonuçlar sunuyoruz.</p>
+            </div>
+
         </div>
-        <div class="projects-grid">
-            <div class="project-card reveal">
-                <div class="project-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80" alt="Vadi Konutu">
-                </div>
-                <div class="project-info">
-                    <h3>Vadi Konutu</h3>
-                    <p>Modern Minimalizm / İstanbul</p>
+    </section>
+
+    <!-- 4. PORTFOLYO BÖLÜMÜ -->
+    <section id="portfolio" class="visible">
+        <h2>Son Projelerimiz</h2>
+        <div class="grid-container">
+
+            <!-- Kart 1: Lüks Konut Örneği -->
+            <div class="portfolio-card visible" data-section="portfolio">
+                <img src="https://via.placeholder.com/600x450?text=Lüks+Konak+İçyeri" alt="Lüks Konut Tasarımı" class="card-image">
+                <div class="card-info">
+                    <h3>Modern Villa İç Mekânı</h3>
+                    <p>İstanbul, Lüks Yaşam Alanı</p>
+                    <a style="display: inline-block; margin-top: 10px;">Detay &rarr;</a>
                 </div>
             </div>
-            <div class="project-card reveal" style="transition-delay: 0.2s;">
-                <div class="project-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80" alt="Aura Penthouse">
-                </div>
-                <div class="project-info">
-                    <h3>Aura Penthouse</h3>
-                    <p>Lüks & Doku / Bodrum</p>
+
+             <!-- Kart 2: Ticari Ofis Örneği -->
+            <div class="portfolio-card visible" data-section="portfolio">
+                <img src="https://via.placeholder.com/600x450?text=Kurumsal+Ofis+Tasarımı" alt="Ticari Ofis Tasarımı" class="card-image">
+                <div class="card-info">
+                    <h3>Kurumsal Çalışma Alanı</h3>
+                    <p>Takım Odaklı, Fonksiyonel Ofis</p>
+                    <a style="display: inline-block; margin-top: 10px;">Detay &rarr;</a>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- About Section -->
-    <section id="hakkimizda">
-        <div class="about-container">
-            <div class="about-text reveal">
-                <h3>Form, Işık ve Malzemenin Kusursuz Uyumu</h3>
-                <p>Hansa olarak her projeyi benzersiz bir hikaye olarak ele alıyoruz. Mekanın ruhunu, gün ışığının hareketini ve kullanılan malzemelerin dokusunu en ince detayına kadar kurguluyoruz.</p>
-                <p>Amacımız sadece güzel mekanlar yaratmak değil; yaşam kalitenizi yükselten, zamansız ve sürdürülebilir alanlar tasarlamak.</p>
-                <a href="#iletisim" class="btn" style="opacity: 1; transform: none; animation: none;">İletişime Geç</a>
+             <!-- Kart 3: Butik Otel Örneği -->
+            <div class="portfolio-card visible" data-section="portfolio">
+                <img src="https://via.placeholder.com/600x450?text=Butik+Otel+Lobi+Tasarımı" alt="Butik Otel Tasarımı" class="card-image">
+                <div class="card-info">
+                    <h3>Zarif Butik Otel Lobi</h3>
+                    <p>Misafir Deneyimi Odaklı Tasarım</p>
+                    <a style="display: inline-block; margin-top: 10px;">Detay &rarr;</a>
+                </div>
             </div>
-            <div class="about-image reveal" style="transition-delay: 0.3s;"></div>
+
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="iletisim">
-        <div class="contact-container reveal">
-            <h3>Hayalinizdeki Mekanı Birlikte Kuralım</h3>
-            <p>Yeni projeler, iş birlikleri ya da sadece tanışmak için bize ulaşın.</p>
-            <a href="mailto:contact@hansa-studio.com" class="contact-email">contact@hansa-studio.com</a>
-        </div>
+    <!-- 5. İLETİŞİM BÖLÜMÜ -->
+    <section id="iletisim" class="visible">
+        <h2>Projeleriniz Konuşmaya Başlasın</h2>
+        <p style="text-align: center; margin-bottom: 40px; font-size: 1.1rem;">Hayal ettiğiniz o eşsiz yaşam alanını yaratmak için bizimle iletişime geçin.</p>
+
+        <form id="contact-form" action="#" method="POST">
+            <div class="form-group">
+                <label for="name">Ad Soyad</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-posta Adresi</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Proje Türü / Konu</label>
+                <select id="subject" name="subject" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; appearance: none;">
+                    <option value="">Lütfen seçiniz...</option>
+                    <option value="konut">Konut (Villa/Daire)</option>
+                    <option value="ticari">Ticari Alan (Ofis/Kafe)</option>
+                    <option value="otel">Otel / Butik Konaklama</option>
+                    <option value="diğer">Diğer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="message">Mesajınız / Detaylar</label>
+                <textarea id="message" name="message" rows="6" required placeholder="Lütfen projenizle ilgili detayları paylaşın..."></textarea>
+            </div>
+            <button type="submit" class="cta-button" style="width: 100%; margin-top: 20px; border: none;">Teklif Al & İletişime Geç</button>
+        </form>
     </section>
 
-    <!-- Footer -->
+    <!-- FOOTER -->
     <footer>
-        <p>&copy; 2026 Hansa Interior Architecture. Tüm hakları saklıdır.</p>
-        <p>Tasarım & Kodlama Stüdyosu</p>
+        <div class="footer-content">
+            <div>&copy; <span class="copyright" id="currentYear"></span> Hansa İç Mimarlık. Tüm Hakları Saklıdır.</div>
+            <div>
+                <span>Adres: Örnek Mah. Huzur Cad. No: 10, İstanbul / Türkiye</span><br>
+                <span>Telefon: +90 (212) 555 55 55</span>
+            </div>
+        </div>
     </footer>
 
-    <!-- JavaScript for Interactions & Smooth Animations -->
+    <!-- JAVASCRIPT (Animasyonlar ve İşlevsellik) -->
     <script>
-        // Sayfa yüklendiğinde hero animasyonunu tetikle
-        window.addEventListener('load', () => {
-            document.querySelector('.hero').classList.add('loaded');
-        });
+        // 1. Sayfa Yılı Güncellemesi
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // Navbar Scroll Efekti
-        const header = document.getElementById('header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.style.padding = '1.2rem 5%';
-                header.style.background = 'rgba(15, 15, 15, 0.95)';
-            } else {
-                header.style.padding = '2rem 5%';
-                header.style.background = 'linear-gradient(to bottom, rgba(15,15,15,0.9), transparent)';
+        // 2. Scroll Reveal (Scroll ile görünür yapma animasyonu)
+        const sections = document.querySelectorAll('.visible');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1 // %10 göründüğünde tetiklenir
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Öğeye 'visible' sınıfını ekleyerek CSS animasyonunu başlat
+                    entry.target.classList.add('visible'); 
+                    observer.unobserve(entry.target); // Bir kere çalıştık, gözlemlemeyi durdur
+                }
+            });
+        }, observerOptions);
+
+        // Tüm bölümlere gözlemci ekle
+        document.querySelectorAll('section').forEach(section => {
+             // Hero zaten başlangıçta visible sınıfına sahip olduğu için atlanabilir
+            if (section.id !== 'hero') { 
+                observer.observe(section);
             }
         });
 
-        // Scroll Reveal Animasyonları (Intersection Observer)
-        const revealElements = document.querySelectorAll('.reveal');
 
-        const revealCallback = (entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
-                }
-            });
-        };
+        // 3. Form Gönderimi Simülasyonu
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Sayfa yenilenmesini engelle
 
-        const revealObserver = new IntersectionObserver(revealCallback, {
-            root: null,
-            threshold: 0.15
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text;
+            const message = document.getElementById('message').value;
+
+            alert(
+                `✅ Mesajınız başarıyla alındı,\n${name} Bey/Hanım.\n\n"Hansa" ekibi, ${subject} ile ilgili projenizi inceleyerek en kısa sürede size geri dönecektir. Size ulaşılabilecek e-posta: ${email}`
+            );
+
+            // Formu temizle
+            this.reset();
         });
 
-        revealElements.forEach(element => {
-            revealObserver.observe(element);
-        });
 
-        // Yumuşak Sayfa İçi Kaydırma (Smooth Anchor Scrolling)
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
     </script>
 </body>
 </html>
