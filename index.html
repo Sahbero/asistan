@@ -3,269 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HANSA - İç Mimarlık</title>
+    <title>HANSA - İç Mimarlık Uzmanı</title>
+    
+    <!-- Font CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800&family=Raleway:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
     <style>
-        /* Temizlik ve temel stiller */
+        /* Temel Stiller */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            overflow-x: hidden;
-            background-color: #f8f9fa;
             color: #333;
-            line-height: 1.6;
+            background-color: white;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        /* Ana stiller */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        /* Ana Sayfa Stilleri */
+        .home-section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: #f8f9fa;
+            overflow: hidden;
         }
 
-        header {
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .hero-container {
+            text-align: center;
+            z-index: 2;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: all 0.5s ease;
+        }
+        
+        /* İçerik Bölümü Stilleri */
+        section {
+            padding: 80px 0;
+            min-height: 80vh;
+            display: none;
+        }
+
+        #home {
+            display: flex !important;
+        }
+        
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            color: #e74c3c;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Şube Navigasyonu */
+        nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            z-index: 100;
-        }
-
-        .header-content {
+            background-color: rgba(231, 76, 60, 0.9);
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-        }
-
-        /* Logo */
-        .logo {
-            font-size: 32px;
-            font-weight: bold;
-            color: #e74c3c;
-            text-decoration: none;
-            transform-style: preserve-3d;
-            transition: all 0.5s ease;
-        }
-
-        .logo:hover {
-            transform: rotateY(180deg);
-        }
-
-        /* Gezgin Navigasyon */
-        nav {
-            display: flex;
-            align-items: center;
+            z-index: 100;
+            transition: all 0.4s ease;
         }
 
         nav ul {
-            display: flex;
             list-style-type: none;
+            display: flex;
         }
 
         nav li a {
-            padding: 25px 30px;
-            color: #e74c3c;
+            color: white;
             text-decoration: none;
             font-weight: bold;
+            margin: 0 20px;
+            padding: 10px;
+            border-radius: 5px;
             transition: all 0.3s ease;
-            position: relative;
-        }
-
-        /* Efekt stilleri */
-        .branch-name {
             transform-style: preserve-3d;
-            animation: branchAnimation 2s infinite alternate;
-        }
-
-        @keyframes branchAnimation {
-            from {transform: rotateY(5deg);}
-            to {transform: rotateY(-5deg);}
-        }
-
-        /* İçerik bölümleri */
-        .section {
-            padding-top: 100px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease;
-        }
-
-        section.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Animasyon stilleri */
-        .slide-in-left {
-            animation: slideInLeft 0.5s forwards;
-        }
-
-        .slide-out-right {
-            animation: slideOutRight 0.5s forwards;
-        }
-        
-        @keyframes slideInLeft {
-            from {transform: translateX(-100%); opacity: 0;}
-            to {transform: translateX(0); opacity: 1;}
-        }
-
-        @keyframes slideOutRight {
-            from {transform: translateX(0); opacity: 1;}
-            to {transform: translateX(50px); opacity: 0;}
-        }
-        
-        /* Arka plan stilleri */
-        .background-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2="0" fill='%23e74c3c'%3E%3Ccircle cx='15' cy='15' r='8'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: 60px 60px;
             position: relative;
         }
 
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
+        /* Kart Stilleri */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* Kart stilleri */
         .card {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
             transform-style: preserve-3d;
             perspective: 1000px;
-            transition: all 0.4s ease;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .card::before, 
-        .card::after {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            background-color: #e74c3c;
-            border-radius: 10px;
-            z-index: -2;
-            transition: all 0.5s ease;
         }
 
         .card:hover {
-            transform: translateY(-20px) rotateX(5deg);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transform: translateY(-20px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         
-        /* Footer stilleri */
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 60px 0;
-            text-align: center;
+        /* Animasyon Stilleri */
+        @keyframes floatAnimation {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { transform: translateY(-20px) rotateX(3deg); opacity: 1; }
+            90% { transform: translateY(15px) scale(1.02); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
         }
 
-        .social-icons {
-            transform-style: preserve-3d;
-            animation: socialSpin 5s infinite linear;
+        .float-animation {
+            animation: floatAnimation 3s forwards;
+            animation-delay: calc(var(--delay) * 1s);
         }
         
-        @keyframes socialSpin {
-            from {transform: rotateZ(0deg);}
-            to {transform: rotateZ(360deg);}
+        /* 3D Efekt Stilleri */
+        .container-3d {
+            perspective: 800px;
+            transform-style: preserve-3d;
+        }
+
+        .cube-container {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin: 50px auto;
+            transform-style: preserve-3d;
+            animation: cubeAnimation 10s infinite linear;
+        }
+        
+        @keyframes cubeAnimation {
+            from {transform: rotateX(0) rotateY(0);}}
+            to {transform: rotateX(-180deg) rotateY(-180deg);}}
+        }
+
+        /* Form Stilleri */
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e74c3c;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 5px rgba(231,76,60,0.2);
+        }
+        
+        /* Responsive Tasarım */
+        @media screen and (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block !important;
+            }
+            
+            section {
+                padding: 50px 20px;
+            }
+            
+            .hero h1 {
+                font-size: 3rem;
+            }
         }
     </style>
 </head>
 <body>
-    <header class="background-pattern">
-        <div class="container header-content">
-            <a href="#" class="logo">HANSA</a>
-            <nav>
-                <ul>
-                    <li><a href="#" onclick="activateSection('home')">Ana Sayfa</a></li>
-                    <li><a href="#" onclick="activateSection('about')">Hakkımızda</a></li>
-                    <li><a href="#" onclick="activateSection('projects')">Projelerimiz</a></li>
-                    <li><a href="#" onclick="activateSection('contact')">İletişim</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+
+    <!-- Navigasyon -->
+    <nav>
+        <ul onclick="activateSection('home')">
+            <li><a href="#" class="active">Ana Sayfa</a></li>
+            <li><a href="#">Hakkımızda</a></li>
+            <li><a href="#">Projelerimiz</a></li>
+            <li><a href="#">Ulaşım Yolları</a></li>
+        </ul>
+
+        <!-- Mobil Menü Butonu -->
+    </nav>
 
     <!-- Ana Sayfa -->
-    <section id="home" class="container section">
+    <section id="home" class="active">
+        <div class="cube-container"></div>
+        
         <h2>Modern İç Mimarlık Çözümleri</h2>
-        <p class="slide-in-left">HANSA ile yenilikçi, kullanıcı odaklı iç mimarlık çözümlerine ulaşın. Tasarımcı ekibimizle iletişime geçerek hayallerinizin realizationını yapabilirsiniz.</p>
+        
+        <p>İşte şu anda HANSA'da yapılmakta olan bazı projeler:</p>
+        
+        <!-- Projeler -->
+        <div class="card-container">
+            <div onclick="activateSection('projects')">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93by53My5vcmcvb3RhYmxlIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iNzAwIiBoZWlnaHQ9Ijc2MCIgZmlsbD0idXJsKCNhbnQpIi8+PHRleHQgeD0iMTUiIHk9IjE1JSIgZm9udC1zaXplLWxhbmdlbGl0dWciPSJyZXAiIHN0cm9rZT0id2hpdGiiOiAib3BzI" alt="Modern Ofis Projesi">
+                <div class="card-content">
+                    <h3>Modern Ofis Çözümleri</h3>
+                    <p>Kent merkezi办公空间用解决方案和优化设计的办公室环境。</p>
+                </div>
+            </div>
+            
+            <!-- Diğer kartlar -->
+        </div>
     </section>
 
     <!-- Hakkımızda -->
-    <section id="about" class="container section background-pattern">
-        <h2>Kimiz Biz</h2>
-        <p class="slide-in-left">Tasarımcılığımızı 15 yılı aşkın sürede geliştirmiş, yaratıcı fikirlerimizi her zaman müşterilerin ihtiyaçlarına göre özelleştiriyoruz.</p>
+    <section id="about">
+        <h2 class="section-title">HANSA'ya Hoş Geldiniz</h2>
+        
+        <p>Uzman ekibimiz, kullanıcı odaklı yaklaşımıyla modern iç mimarlık çözümleri sunan şirketler arası öncülerdendir. 15 yılı aşkın sürede birçok farklı sektörde yenilikçi tasarımlarımızla tanıştık.</p>
+        
+        <!-- Misyon Kartı -->
     </section>
 
-    <!-- Projeler -->
-    <section id="projects" class="container section">
-        <h2>Projelerimiz</h2>
-        <!-- Örnek kartlar -->
+    <!-- Projelerimiz -->
+    <section id="projects">
+        <h2 class="section-title">Projelerimiz</h2>
+        
+        <div class="card-container" onclick="activateSection('projects')">
+            <!-- Proje Kartları -->
+        </div>
     </section>
 
-    <!-- İletişim -->
-    <section id="contact" class="container section background-pattern">
-        <h2>Bize Ulaşın</h2>
-        <p class="slide-in-left">İnternet üzerinden iletişim için [email protected] adresine mail atabilirsiniz.</p>
-    </section>
-
-    <!-- 3D animasyon scriptleri -->
-    <script>
-        // Aktif bölümü değiştirme
-        function activateSection(id) {
-            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
-            event.preventDefault();
+    <!-- İletişim Formu -->
+    <section id="contact">
+        <h2 class="section-title">Bize Ulaşın</h2>
+        
+        <form>
+            <input type="text" placeholder="Adınız ve Soyadınız">
             
-            let currentId = 'home';
-            if (id === 'about' || id === 'projects') {
-                const sections = [
-                    {id: 'about', delay: 200, animationClass: 'slideInLeft'},
-                    {id: 'projects', delay: 350, animationClass: 'slideOutRight'}
+            <textarea placeholder="Mesajınız"></textarea>
+            
+            <!-- Butonlar -->
+        </form>
+    </section>
+
+    <!-- JavaScript -->
+    <script>
+        // Şube navigasyonu
+        function activateSection(id) {
+            document.querySelectorAll('section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('nav a').forEach(link => link.classList.remove('active'));
+            
+            event.preventDefault();
+            if (id !== 'home') {
+                let activeLink = document.querySelector(`nav a:nth-child(${Array.from(nav.children).findIndex(li => li.textContent === id)})`);
+                activeLink.classList.add('active');
+                
+                // Önceki sayfanın kaldırılması ve yeni sayfanın eklenmesi
+                const sectionsData = [
+                    {id: 'home', name: 'Ana Sayfa'},
+                    {id: 'about', name: 'Hakkımızda'},
+                    {id: 'projects', name: 'Projelerimiz'},
+                    {id: 'contact', name: 'İletişim'}
                 ];
                 
-                let sectionToActivate = sections.find(s => s.id === id);
-                if (sectionToActivate) {
-                    document.getElementById(id).classList.add('active');
-                    setTimeout(() => event.target.classList.remove(sectionToActivate.animationClass), sectionToActivate.delay);
+                let currentSection = document.getElementById(id);
+                if (currentSection) {
+                    // Sayfa yükleniyor animasyonu
+                    currentSection.style.display = 'none';
+                    
+                    setTimeout(() => {
+                        window.location.hash = id;
+                        
+                        sectionsData.forEach(sectionInfo => {
+                            const sectionElem = document.getElementById(sectionInfo.id);
+                            if (sectionElem && sectionInfo.id !== id) {
+                                sectionElem.style.display = 'block';
+                                
+                                // Sayfa yüklendiğinde efektleri başlat
+                                initEffects();
+                            }
+                        });
+                        
+                        // 3D geçiş için
+                        createCubeEffect();
+                    }, 400);
+                } else {
+                    alert('Geçerli bir sayfa seçimi yapınız.');
                 }
             }
         }
 
-        // Sayfa yüklendiğinde animasyonları başlat
-        window.addEventListener('load', () => {
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        
-                        // Animasyon efektleri
-                        setTimeout(() => {
-                            document.querySelectorAll('.card').forEach(card => card.style.opacity = '1');
-                        }, 300);
-                    }
-                });
-            }, { threshold: 0.15 });
-
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.transition = 'opacity 0.8s ease, transform 0.4s ease';
+        // 3D Efekt Oluşturma
+        function createCubeEffect() {
+            let cubes = [];
+            
+            for (let i=0; i<12; i++) {
+                let cube = document.createElement('div');
+                cube.className = 'cube-container';
                 
-                if (section.id === 'home') observer.observe(section);
-                else setTimeout(() => observer.observe(section), 600);
+                // Her küp için farklı stiller ve animasyonlar
+                if (i % 4 === 0) {
+                    cube.style.animationDuration = `${8 + Math.floor(Math.random() * 5)}s`;
+                    cube.style.animationDelay = `${Math.random() * -1}s`;
+                }
+                
+                // Küp oluşturma işlevi
+            }
+        }
+
+        // Kart animasyonları başlatma
+        function initEffects() {
+            let cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.boxShadow = `0 ${Math.random() * 15}px ${Math.random() * 20}px rgba(0,0,0,${Math.random()})`;
+                
+                // Kart animasyonu
             });
-        });
+        }
     </script>
 </body>
 </html>
