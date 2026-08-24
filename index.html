@@ -3,1045 +3,1339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İnşaat Sahası Yönetim Paneli</title>
-    <!-- Font Awesome CDN (İkonlar için) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <style>
-        /* GENEL STİLLEME */
-        :root {
-            --primary-color: #a0522d; /* Sienna - İnşaat toprağı rengi */
-            --secondary-color: #4682b4; /* SteelBlue - Teknik vurgu rengi */
-            --background-light: #f4f4f9;
-            --card-bg: #ffffff;
-            --text-dark: #333;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background-light);
-            margin: 0;
-            padding: 0;
-            color: var(--text-dark);
-        }
-
-        /* HEADER ve NAVİGASYON */
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 1.8em;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-        }
-
-        nav ul li button {
-            background: none;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s, border-radius 0.3s;
-        }
-
-        nav ul li button:hover,
-        nav ul li button.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            border-bottom: 2px solid white;
-        }
-
-        /* MAIN CONTAINER */
-        main {
-            padding: 30px;
-            max-width: 1400px;
-            margin: auto;
-        }
-
-        /* GENEL KART (CARD) STİLİ */
-        .section-container, .card {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            color: var(--primary-color);
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            margin-top: 0;
-        }
-
-        /* FORM STİLİ */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        input[type="text"], input[type="date"], input[type="number"], select, textarea {
-            width: calc(100% - 20px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Padding dahil genişlik */
-            transition: border-color 0.3s;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 5px rgba(70, 130, 180, 0.2);
-        }
-
-        button[type="submit"], .btn {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
-        }
-
-        button[type="submit"]:hover, .btn:hover {
-            background-color: #8b4513; /* Daha koyu kahve */
-        }
-
-        /* DİNAMİK İÇERİK STİLİ (MODÜLLER) */
-        .hidden {
-            display: none;
-}
-
-        /* İş Takibi - Kanban Görünümü için */
-        #job-tracking-content {
-            display: flex;
-            gap: 20px;
-        }
-
-        .kanban-column {
-            flex: 1;
-            min-width: 300px;
-            background-color: #e9ecef;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .job-card {
-            background-color: var(--card-bg);
-            border-left: 5px solid;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .job-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Kanban Renk Kodlaması */
-        .todo .job-card { border-left-color: var(--warning-color); }
-        .progress .job-card { border-left-color: var(--secondary-color); }
-        .done .job-card { border-left-color: var(--success-color); }
-
-        /* UTİLİTELER */
-        .alert {
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-        .alert-success { background-color: #d4edda; color: var(--success-color); border: 1px solid var(--success-color); }
-        .alert-danger { background-color: #f8d7da; color: var(--danger-color); border: 1px solid var(--danger-color); }
-
-    </style>
+    <title>ArchiMate - Mimar Asistanı</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and ReactDOM CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for converting JSX syntax to JS -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>🚧 İnşaat Saha Yönetim Sistemi</h1>
-        <div>
-            <span>👋 Hoş Geldiniz, Berhan</span>
-        </div>
-    </header>
 
-    <!-- NAVİGASYON BAR -->
-    <nav>
-        <ul>
-            <li><button id="nav-dashboard" class="active">🏠 Genel Bakış</button></li>
-            <li><button id="nav-proje">📑 Proje Bilgileri</button></li>
-            <li><button id="nav-is-takibi">✅ İş Takibi</button></li>
-            <li><button id="nav-urun-talebi">📦 Ürün Talebi</button></li>
-            <li><button id="nav-sevkiyat">🚚 Sevkiyat Kaydı</button></li>
-            <li><button id="nav-hatirlatici">🔔 Hatırlatıcılar</button></li>
-            <li><button id="nav-guvenlik">🚧 Güvenlik/Kontrol</button></li>
-        </ul>
-    </nav>
+    <div id="root"></div>
 
-    <!-- ANA İÇERİK ALANI -->
-    <main>
-        
-        <!-- 1. GENEL BAŞLANGIÇ SAYFASI (DASHBOARD) -->
-        <section id="dashboard-content" class="section-container">
-            <h2>🏠 Hoş Geldiniz! Güncel Sahne Durumu</h2>
+    <script type="text/babel">
+        // ===============================================
+        // 🌍 I. LANGUAGE DICTIONARY (Localization)
+        // ===============================================
+        const translations = {
+            tr: {
+                appTitle: "ArchiMate",
+                appSubtitle: "Mimar Asistanı",
+                overview: "Özet",
+                projects: "Projeler",
+                tools: "Araçlar",
+                activeProject: "Aktif Projeler",
+                totalNotes: "Toplam Not",
+                recentProjects: "Devam Eden Projeler",
+                completedProjects: "Bitmiş Projeler",
+                todayTasks: "Bugün Yapılacaklar",
+                noProjects: "Henüz proje eklenmemiş.",
+                noCompletedProjects: "Henüz tamamlanmış proje bulunmuyor.",
+                noTodayTasks: "Bugün için planlanmış bir işiniz yok.",
+                projectOrClient: "Proje veya müşteri ara...",
+                createNewProject: "Yeni Proje Oluştur",
+                projectName: "Proje Adı *",
+                clientName: "Müşteri Adı",
+                saveProject: "Projeyi Kaydet",
+                notes: "Notlar",
+                calendar: "Takvim",
+                materials: "Malzemeler",
+                techDocs: "Dökümanlar",
+                team: "Ekip",
+                writeNote: "Bu proje için yeni bir not yazın...",
+                addNote: "Kaydet",
+                updateNote: "Güncelle",
+                cancel: "İptal",
+                noNotes: "Henüz not eklenmemiş.",
+                workCalendar: "İş Takvimi",
+                fieldAndOffice: "Saha ve ofis görevlerini planla",
+                taskTitle: "İş Başlığı",
+                date: "Tarih",
+                start: "Başlangıç",
+                end: "Bitiş",
+                reminderActive: "Hatırlatıcı Açık",
+                addReminder: "Hatırlatıcı Ekle",
+                addToCalendar: "Takvime Ekle",
+                updateTask: "Görevi Güncelle",
+                noTasks: "Planlanmış bir iş bulunmuyor.",
+                todayHighlight: "BUGÜN",
+                selectedMaterials: "Malzeme Seçimleri",
+                stockInfo: "Stok Bilgisi",
+                cancelBtn: "İptal",
+                addNew: "Yeni Ekle",
+                materialName: "Malzeme Adı/Kodu",
+                brand: "Marka",
+                area: "Kullanım Alanı",
+                addToBoard: "Panoya Ekle",
+                updateMaterial: "Malzemeyi Güncelle",
+                noMaterials: "Panoda malzeme bulunmuyor.",
+                requestMaterial: "Talep Et",
+                addStock: "Stoğa Ekle",
+                quantity: "Miktar",
+                unit: "Birim (Adet, m², vb.)",
+                statusAvailable: "Stokta",
+                statusPending: "Sevk Bekliyor",
+                markDelivered: "Teslim Alındı",
+                searchStock: "Stokta malzeme ara...",
+                noStock: "Stok veya talep kaydı bulunamadı.",
+                projectInfo: "Proje Bilgileri",
+                address: "Açık Adres",
+                projectType: "Proje Tipi (Konut, Ofis vb.)",
+                projectArea: "Proje Alanı (m²)",
+                startDate: "Başlangıç Tarihi",
+                endDate: "Tahmini Bitiş",
+                clientInfo: "İşveren Bilgisi",
+                saveInfo: "Bilgileri Kaydet",
+                uploadDoc: "Teknik Döküman Yükle",
+                noDocs: "Henüz teknik döküman yüklenmemiş.",
+                shareProject: "Projeyi Paylaş",
+                shareDesc: "Ekip arkadaşlarınızı veya müşterinizi davet ederek projeyi birlikte yönetebilirsiniz.",
+                sendInvite: "Davet Gönder",
+                emailPlaceholder: "E-posta adresi...",
+                inviteBtn: "Davet Et",
+                accessList: "Erişimi Olanlar",
+                you: "Sen",
+                projectManager: "Yönetici",
+                canEditToggle: "Düzenleme İzni",
+                remove: "Kaldır",
+                practicalTools: "Pratik Araçlar",
+                stairCalc: "Merdiven Hesaplayıcı",
+                floorHeight: "Kat Yük. (cm)",
+                riserCount: "Rıht Sayısı",
+                stepCount: "Basamak S.",
+                riserHeight: "Rıht Y. (cm)",
+                treadDepth: "Basamak Der. (cm)",
+                pkgCalculator: "Malzeme Paket İhtiyacı",
+                netArea: "Net Alan (m²)",
+                wasteRatio: "Fire Oranı (%)",
+                customWaste: "Özel Fire % :",
+                pkgContent: "1 Paketin İçeriği (m²)",
+                grossRequired: "Brüt İhtiyaç (Fireli)",
+                totalToBuy: "Toplam Alınması Gereken",
+                packages: "PAKET",
+                quickArea: "Hızlı Metraj",
+                areaCalc: "Alan (m²)",
+                volumeCalc: "Hacim (m³)",
+                width: "En (m)",
+                length: "Boy (m)",
+                heightCalc: "Yükseklik/Derinlik (m)",
+                totalArea: "Toplam Alan",
+                totalVolume: "Toplam Hacim",
+                profileTitle: "Profil Bilgileri",
+                fullName: "Ad Soyad",
+                profession: "Meslek",
+                customProfession: "Lütfen mesleğinizi giriniz",
+                language: "Dil",
+                uploadPhoto: "Profil Fotoğrafı Yükle",
+                maxSizeWarning: "Dosya boyutu 50MB'den küçük olmalıdır.",
+                saveProfile: "Profili Kaydet",
+                quotaWarning: "Hafıza doldu! Lütfen daha küçük dosyalar seçin.",
+                finishProject: "Projeyi Bitir",
+                makeActive: "Aktife Al",
+                completed: "Tamamlandı",
+                attachFile: "Dosya",
+                fileLimit: "Dosya çok büyük! Lütfen 50MB altı seçin.",
+                readOnlyMsg: "Bu proje tamamlandığı için salt okunur (arşiv) modundadır. Değişiklik yapılamaz.",
+                login: "Giriş Yap",
+                register: "Kayıt Ol",
+                email: "E-posta Adresi",
+                password: "Şifre",
+                verifyCode: "Doğrulama Kodu",
+                verifyBtn: "Doğrula ve Tamamla",
+                noAccount: "Hesabınız yok mu? Kayıt Olun",
+                hasAccount: "Zaten hesabınız var mı? Giriş Yapın",
+                wrongCode: "Hatalı doğrulama kodu!",
+                codeSentMsg: "Doğrulama kodunuz e-postanıza gönderildi.",
+                logout: "Çıkış Yap",
+                authorPrefix: "Yazan: ",
+                micError: "Mikrofon izni alınamadı.",
+                notifications: "Bildirimler",
+                noNotifications: "Yeni bildirim bulunmuyor.",
+                deleteConfirm: "Bu öğeyi silmek istediğinizden emin misiniz?",
+                yesDelete: "Evet, Sil",
+                cancelDelete: "İptal",
+                deleteWarningTitle: "Silme Onayı",
+                other: "Diğer",
+                image: "Görsel",
+                changeImage: "Görsel Değiştir",
+                stop: "Durdur",
+                audio: "Ses",
+                clickToDownload: "İndirmek için tıkla",
+                newWorkPlan: "Yeni İş Planı",
+                active: "Aktif",
+                matFloor: "Zemin",
+                matWall: "Duvar",
+                matFurniture: "Mobilya",
+                matLighting: "Aydınlatma",
+                matAccessory: "Aksesuar",
+                brandLabel: "MARK:",
+                areaLabel: "ALAN:",
+                saveSuccess: "Başarılı!",
+                noInfo: "Henüz bilgi girilmemiş.",
+                edit: "Düzenle",
+                fullAccess: "Tam Yetki",
+                canEdit: "Düzenleyebilir",
+                viewerOnly: "Sadece İzleyici",
+                permission: "İzin",
+                pdfDesc: "PDF, DWG, DOCX vb. (Max 50MB)",
+                exModa: "Örn: Moda Cd. No:42 Kadıköy",
+                exType: "Örn: Konut, Ofis",
+                exClient: "İşveren adı, telefon vb.",
+                profArch: "Mimar",
+                profIntArch: "İç Mimar",
+                profCivil: "İnşaat Mühendisi",
+                profElec: "Elektrik Mühendisi",
+                profMech: "Makine Mühendisi",
+                profLand: "Peyzaj Mimarı",
+                profSafety: "İş Güvenliği Uzmanı",
+                profBuilder: "Usta",
+                profManager: "Yönetici"
+            },
+            en: {
+                appTitle: "ArchiMate",
+                appSubtitle: "Architect Assistant",
+                overview: "Overview",
+                projects: "Projects",
+                tools: "Tools",
+                activeProject: "Active Projects",
+                totalNotes: "Total Notes",
+                recentProjects: "In Progress",
+                completedProjects: "Completed Projects",
+                todayTasks: "Today's Tasks",
+                noProjects: "No projects added yet.",
+                noCompletedProjects: "No completed projects yet.",
+                noTodayTasks: "No tasks scheduled for today.",
+                projectOrClient: "Search project or client...",
+                createNewProject: "Create New Project",
+                projectName: "Project Name *",
+                clientName: "Client Name",
+                saveProject: "Save Project",
+                notes: "Notes",
+                calendar: "Calendar",
+                materials: "Materials",
+                techDocs: "Documents",
+                team: "Team",
+                writeNote: "Write a new note for this project...",
+                addNote: "Save",
+                updateNote: "Update",
+                cancel: "Cancel",
+                noNotes: "No notes added yet.",
+                workCalendar: "Work Calendar",
+                fieldAndOffice: "Plan field and office tasks",
+                taskTitle: "Task Title",
+                date: "Date",
+                start: "Start",
+                end: "End",
+                reminderActive: "Reminder Active",
+                addReminder: "Add Reminder",
+                addToCalendar: "Add to Calendar",
+                updateTask: "Update Task",
+                noTasks: "No planned tasks found.",
+                todayHighlight: "TODAY",
+                selectedMaterials: "Material Selections",
+                stockInfo: "Stock Info",
+                cancelBtn: "Cancel",
+                addNew: "Add New",
+                materialName: "Material Name/Code",
+                brand: "Brand",
+                area: "Area of Use",
+                addToBoard: "Add to Board",
+                updateMaterial: "Update Material",
+                noMaterials: "No materials on the board.",
+                requestMaterial: "Request",
+                addStock: "Add to Stock",
+                quantity: "Qty",
+                unit: "Unit",
+                statusAvailable: "In Stock",
+                statusPending: "Pending",
+                markDelivered: "Received",
+                searchStock: "Search stock...",
+                noStock: "No stock or request records found.",
+                projectInfo: "Project Information",
+                address: "Address",
+                projectType: "Project Type",
+                projectArea: "Project Area (m²)",
+                startDate: "Start Date",
+                endDate: "Estimated End Date",
+                clientInfo: "Client Info",
+                saveInfo: "Save Information",
+                uploadDoc: "Upload Tech Document",
+                noDocs: "No documents uploaded yet.",
+                shareProject: "Share Project",
+                shareDesc: "Invite team members or clients to manage the project together.",
+                sendInvite: "Send Invite",
+                emailPlaceholder: "Email address...",
+                inviteBtn: "Invite",
+                accessList: "People with Access",
+                you: "You",
+                projectManager: "Manager",
+                canEditToggle: "Edit Permission",
+                remove: "Remove",
+                practicalTools: "Practical Tools",
+                stairCalc: "Staircase Calculator",
+                floorHeight: "Floor Height (cm)",
+                riserCount: "Riser Count",
+                stepCount: "Step Count",
+                riserHeight: "Riser H. (cm)",
+                treadDepth: "Tread D. (cm)",
+                pkgCalculator: "Material Package Calculator",
+                netArea: "Net Applied Area (m²)",
+                wasteRatio: "Waste Ratio (%)",
+                customWaste: "Custom Waste % :",
+                pkgContent: "1 Package Content (m²)",
+                grossRequired: "Gross Required",
+                totalToBuy: "Total Package Required",
+                packages: "PACKAGES",
+                quickArea: "Quick Survey",
+                areaCalc: "Area (m²)",
+                volumeCalc: "Volume (m³)",
+                width: "Width (m)",
+                length: "Length (m)",
+                heightCalc: "Height/Depth (m)",
+                totalArea: "Total Area",
+                totalVolume: "Total Volume",
+                profileTitle: "Profile Information",
+                fullName: "Full Name",
+                profession: "Profession",
+                customProfession: "Please enter your profession",
+                language: "Language",
+                uploadPhoto: "Upload Profile Photo",
+                maxSizeWarning: "File size must be less than 50MB.",
+                saveProfile: "Save Profile",
+                quotaWarning: "Storage full! Please select smaller files.",
+                finishProject: "Finish Project",
+                makeActive: "Make Active",
+                completed: "Completed",
+                attachFile: "File",
+                fileLimit: "File is too large! Please select under 50MB.",
+                readOnlyMsg: "This project is completed and is in read-only (archive) mode.",
+                login: "Log In",
+                register: "Register",
+                email: "Email Address",
+                password: "Password",
+                verifyCode: "Verification Code",
+                verifyBtn: "Verify & Complete",
+                noAccount: "Don't have an account? Register",
+                hasAccount: "Already have an account? Log In",
+                wrongCode: "Incorrect verification code!",
+                codeSentMsg: "Verification code sent to your email.",
+                logout: "Log Out",
+                authorPrefix: "Author: ",
+                micError: "Microphone permission denied.",
+                notifications: "Notifications",
+                noNotifications: "No new notifications.",
+                deleteConfirm: "Are you sure you want to delete this item?",
+                yesDelete: "Yes, Delete",
+                cancelDelete: "Cancel",
+                deleteWarningTitle: "Delete Confirmation",
+                other: "Other",
+                image: "Image",
+                changeImage: "Change Image",
+                stop: "Stop",
+                audio: "Audio",
+                clickToDownload: "Click to download",
+                newWorkPlan: "New Work Plan",
+                active: "Active",
+                matFloor: "Floor",
+                matWall: "Wall",
+                matFurniture: "Furniture",
+                matLighting: "Lighting",
+                matAccessory: "Accessory",
+                brandLabel: "BRAND:",
+                areaLabel: "AREA:",
+                saveSuccess: "Success!",
+                noInfo: "No info entered yet.",
+                edit: "Edit",
+                fullAccess: "Full Access",
+                canEdit: "Can Edit",
+                viewerOnly: "Viewer Only",
+                permission: "Perm",
+                pdfDesc: "PDF, DWG, DOCX etc. (Max 50MB)",
+                exModa: "Ex: 123 Main St.",
+                exType: "Ex: Residential, Office",
+                exClient: "Client name, phone etc.",
+                profArch: "Architect",
+                profIntArch: "Interior Designer",
+                profCivil: "Civil Engineer",
+                profElec: "Electrical Engineer",
+                profMech: "Mechanical Engineer",
+                profLand: "Landscape Architect",
+                profSafety: "Safety Expert",
+                profBuilder: "Builder",
+                profManager: "Manager"
+            }
+        };
+
+        const STANDARD_PROFESSIONS = [
+          'Mimar', 'İç Mimar', 'İnşaat Mühendisi', 'Elektrik Mühendisi', 
+          'Makine Mühendisi', 'Peyzaj Mimarı', 'İş Güvenliği Uzmanı', 'Usta', 'Yönetici'
+        ];
+
+        // ===============================================
+        // ✨ UTILITY FUNCTIONS (REPLACING REACT CONTEXT)
+        // ===============================================
+
+        // Global State Store & Hooks Replacement
+        const useGlobalState = (initialState, key) => {
+            let state = JSON.parse(localStorage.getItem(`archiMate_${key}`)) || initialState;
+            return { 
+                getState: () => state, 
+                setState: (newStateOrCallback) => {
+                    if (typeof newStateOrCallback === 'function') {
+                        state = newStateOrCallback(state);
+                    } else {
+                        Object.keys(newStateOrCallback).forEach(key => {
+                            state[key] = newStateOrCallback[key];
+                        });
+                        Object.assign(state, newStateOrCallback);
+                    }
+                    localStorage.setItem(`archiMate_${key}`, JSON.stringify(state));
+                    // In a real app, this would trigger re-render; here we rely on manual prop passing/rerender calls
+                }, 
+                getValue: () => state
+            };
+        };
+
+        // Toast System
+        const showToast = (message) => {
+            const toastContainer = document.getElementById('root');
+            let existingToast = document.querySelector('.toast-message');
+            if (!existingToast) {
+                existingToast = document.createElement('div');
+                existingToast.className = 'absolute top-4 left-1/2 -translate-x-1/2 z-[100] bg-slate-900 text-white px-4 py-2 rounded-full text-sm font-medium shadow-2xl animate-in slide-in-from-top-10 max-w-sm text-center toast-message';
+                toastContainer.appendChild(existingToast);
+            }
+            existingToast.textContent = message;
+            // Clear any existing timeout and set a new one
+            clearTimeout(window.__toastTimer);
+            window.__toastTimer = setTimeout(() => {
+                existingToast.remove();
+            }, 4000);
+        };
+
+        // Confirmation Modal System
+        let confirmDialogState = { isOpen: false, message: '', onConfirm: null };
+        const requestConfirm = (message, onConfirmCallback) => {
+            confirmDialogState = { isOpen: true, message, onConfirm: onConfirmCallback };
+            renderRoot(); // Re-render to show modal
+        };
+
+        const executeConfirm = () => {
+            if (confirmDialogState.onConfirm) confirmDialogState.onConfirm();
+            closeConfirm();
+        };
+
+        const closeConfirm = () => {
+            confirmDialogState = { isOpen: false, message: '', onConfirm: null };
+            renderRoot(); // Re-render to hide modal
+        };
+
+
+        // ===============================================
+        // ✨ ICON COMPONENTS (Using React.createElement for simplicity)
+        // NOTE: In a single file setup, we simulate these icons using basic SVGs or placeholders.
+        // For this conversion, I'll use standard text/class names instead of complex component logic.
+        // ===============================================
+
+        const ProfessionVector = ({ profession, className = "w-12 h-12" }) => {
+            let svgContent = '';
+            if (profession === 'İç Mimar') {
+                svgContent = '<svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V10a6 6 0 0 1 12 0v11M12 4v4M9 8h6" /><rect x="9" y="14" width="6" height="4" rx="1" /></svg>';
+            } else if (profession === 'İnşaat Mühendisi' || profession === 'Makine Mühendisisi' || profession === 'ElektrikMühendisi') {
+                // Using a generic rectangle structure for these
+                svgContent = '<div class="w-full h-full border-[2px] border-current rounded-md"><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M9 3v18M15 3v18M3 9h18M3 15h18" /></div>';
+            } else if (profession === 'Mimar') {
+                svgContent = '<svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" /><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" /><path d="m6 21 6-6 6 6" /></svg>';
+            } else {
+                // Default icon (e.g., a building or generic tool)
+                svgContent = '<svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>';
+            }
+
+            return `<div class="${className}">${svgContent}</div>`;
+        };
+
+
+        // ===============================================
+        // ✨ AUTH SCREEN (Login/Register)
+        // ===============================================
+
+        function AuthScreen({ onLogin, t }) {
+            const [mode, setMode] = React.useState('login'); 
+            const [formData, setFormData] = React.useState({ name: '', email: '', password: '', code: '' });
+            const [generatedCode, setGeneratedCode] = React.useState('');
+
+            // --- Event Handlers ---
+            const handleRegister = (e) => {
+                e.preventDefault();
+                if (mode === 'login') {
+                    onLogin({ email: formData.email, name: formData.email.split('@')[0] });
+                } else if (mode === 'register') {
+                    // Simulate code generation and state update
+                    const code = Math.floor(100000 + Math.random() * 900000).toString();
+                    setGeneratedCode(code);
+                    setMode('verify');
+                    showToast(`${t('codeSentMsg')} TEST KODU: ${code}`);
+                }
+            };
+
+            const handleVerify = (e) => {
+                e.preventDefault();
+                if (formData.code === generatedCode) {
+                    onLogin({ email: formData.email, name: formData.name });
+                } else {
+                    showToast(t('wrongCode'));
+                }
+            };
+
+            // --- Render Logic ---
+            let formContent;
+            if (mode === 'verify') {
+                formContent = `
+                    <form onSubmit=${handleVerify} class="space-y-4 animate-in slide-in-from-right-4">
+                        <div class="text-center mb-6">
+                            <p class="text-sm text-slate-600 font-medium">${formData.email} adresine gönderilen 6 haneli kodu girin.</p>
+                        </div >
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">(${t('verifyCode')})</label>
+                            <div class="relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18l-2-2"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                <input required type="text" maxlength="6" value=${formData.code} onchange={(e) => setFormData({...formData, code: e.target.value})} class="w-full bg-slate-50 pl-10 pr-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-center tracking-[0.5em] font-bold text-lg" placeholder="••••••" />
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl mt-2 hover:bg-indigo-700 transition-colors shadow-md">${t('verifyBtn')}</button>
+                        <button type="button" onclick={() => setMode('register')} class="w-full text-center text-sm font-semibold text-indigo-600 mt-4 hover:text-indigo-800">Geri Dön</button>
+                    </form>
+                `;
+            } else { // mode === 'login' or mode === 'register' (before verification)
+                 const isRegister = mode === 'register';
+                formContent = `
+                    <form onSubmit=${handleRegister} class="space-y-4 animate-in fade-in">
+                        ${isRegister ? `
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">${t('fullName')}</label>
+                                <div class="relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                                    <input required type="text" value=${formData.name} onchange={(e) => setFormData({...formData, name: e.target.value})} class="w-full bg-slate-50 pl-10 pr-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm" placeholder="Ahmet Yılmaz" />
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">${t('email')}</label>
+                            <div class="relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 20.73l1.96-.98A5.5 5.5 0 0 0 12 2a5.5 5.5 0 0 0 3.6-.22v-1.3H17"></path><path d="M12 10V6"></path><path d="M12 14v4"></path></svg>
+                                <input required type="email" value=${formData.email} onchange={(e) => setFormData({...formData, email: e.target.value})} class="w-full bg-slate-50 pl-10 pr-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm" placeholder="ornek@mail.com" />
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">${t('password')}</label>
+                            <div class="relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18l-2-2"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                <input required type="password" value=${formData.password} onchange={(e) => setFormData({...formData, password: e.target.value})} class="w-full bg-slate-50 pl-10 pr-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm" placeholder="••••••••" />
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl mt-2 hover:bg-indigo-700 transition-colors shadow-md">${isRegister ? t('register') : t('login')}</button>
+                        <div class="text-center mt-6">
+                            <button type="button" onclick={() => setMode(mode === 'login' ? 'register' : 'login')} class="text-sm font-semibold text-slate-500 hover:text-indigo-600 transition-colors">
+                                ${mode === 'login' ? t('noAccount') : t('hasAccount')}
+                            </button>
+                        </div>
+                    </form>
+                `;
+            }
+
+            return `
+                <div class="flex flex-col h-screen bg-slate-50 items-center justify-center p-6 sm:max-w-md sm:mx-auto sm:border-x sm:border-slate-200">
+                    <div class="w-full bg-white p-8 rounded-3xl shadow-lg border border-slate-100 animate-in fade-in zoom-in-95 duration-300">
+                        <div class="flex flex-col items-center mb-8">
+                            <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-md mb-4">${ProfessionVector({ profession: 'Mimar', className: "w-full h-full text-white" })}</div>
+                            <h1 class="text-2xl font-black text-slate-800 tracking-tight">${t('appTitle')}</h1>
+                            <p class="text-sm text-slate-500 font-medium">${t('appSubtitle')}</p>
+                        </div >
+
+                        ${formContent}
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // ===============================================
+        // ✨ PROFILE MODAL 
+        // ===============================================
+        function ProfileModal({ authUser, profile, setProfile, onClose, onLogout, t }) {
+            const [nameInput, setNameInput] = React.useState(profile.fullName);
             
-            <div style="display: flex; gap: 20px;">
-                <!-- Kart 1: Acil İşler -->
-                <div class="card" style="flex: 1;">
-                    <h3>🔴 Bugün Yapılması Gereken Kritik Görevler</h3>
-                    <p id="dashboard-gorev-sayisi">Gösterge bekleniyor...</p>
-                    <button onclick="showSection('job-tracking-content')">Tüm İşleri Yönet &rarr;</button>
+            // Meslek State'leri
+            const isStandard = STANDARD_PROFESSIONS.includes(profile.profession);
+            const [profSelect, setProfSelect] = React.useState(isStandard ? profile.profession : (profile.profession ? 'Diğer' : 'Mimar'));
+            const [customProf, setCustomProf] = React.useState(isStandard ? '' : profile.profession);
+            
+            const [langInput, setLangInput] = React.useState(profile.language);
+            const [avatarPreview, setAvatarPreview] = React.useState(profile.avatar);
+            
+            // Avatar Change Handler
+             const handleAvatarChange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 50 * 1024 * 1024) { showToast(t('maxSizeWarning')); return; } // 50MB sınırı
+                    const reader = new FileReader();
+                    reader.onloadend = () => setAvatarPreview(reader.result);
+                    reader.readAsDataURL(file);
+                }
+            };
+
+             // Profile Save Handler
+            const handleSaveProfile = () => {
+                 setProfile({fullName: nameInput, profession: profSelect === 'Diğer' ? customProf : profSelect, language: langInput, avatar: avatarPreview});
+                 onClose();
+            };
+
+
+            return `
+                <div class="absolute inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 animate-in fade-in">
+                    <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+                        <button onclick="onClose()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full bg-slate-100"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18l-2-2"></path><circle cx="12" cy="10" r="3"></circle></svg></button>
+                        <h3 class="text-xl font-bold text-slate-800 mb-6">${t('profileTitle')}</h3>
+                        
+                        <div class="flex flex-col items-center mb-6">
+                            <div class="w-24 h-24 rounded-full border-4 border-indigo-100 bg-indigo-50 flex items-center justify-center overflow-hidden shadow-md relative mb-3">${ProfessionVector({ profession: profSelect === 'Diğer' ? customProf : profSelect, className: "w-full h-full" })}</div>
+                            <input type="file" id="avatarInput" accept="image/*" onchange=${(e) => handleAvatarChange(e)} class="hidden" />
+                            <button onclick="document.getElementById('avatarInput').click()" class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors">${t('uploadPhoto')}</button>
+                        </div >
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">${t('email')}</label>
+                                <div class="relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 20.73l1.96-.98A5.5 5.5 0 0 0 12 2a5.5 5.5 0 0 0 3.6-.22v-1.3H17"></path><path d="M12 10V6"></path><path d="M12 14v4"></path></svg>
+                                    <input type="email" value=${authUser?.email || ''} disabled class="w-full pl-9 pr-3 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-500 cursor-not-allowed font-medium" />
+                                </div>
+                            </div >
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">${t('fullName')}</label>
+                                <input type="text" value="${nameInput}" onchange={(e) => setNameInput(e.target.value)} class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm" />
+                            </div >
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">${t('profession')}</label>
+                                <select onchange={(e) => setProfSelect(e.target.value)} class="w-full p-2.5 border border-slate-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                                    <option value="Mimar">${t('profArch')}</option>
+                                    <option value="İç Mimar">${t('profIntArch')}</option>
+                                    <option value="İnşaat Mühendisi">${t('profCivil')}</option>
+                                    <option value="ElektrikMühendisi">${t('profElec')}</option>
+                                    <option value="MakineMühendisi">${t('profMech')}</option>
+                                    <option value="PeyzajMimarı">${t('profLand')}</option>
+                                    <option value="İşGüvenliğiUzmanı">${t('profSafety')}</option>
+                                    <option value="Usta">${t('profBuilder')}</option>
+                                    <option value="Yönetici">${t('profManager')}</option>
+                                    <option value="Diğer">Diğer</option>
+                                </select>
+                                ${profSelect === 'Diğer' ? `
+                                <input type="text" placeholder="${t('customProfession')}" value="${customProf}" onchange={(e) => setCustomProf(e.target.value)} class="w-full mt-2 p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm animate-in slide-in-from-top-2" />
+                                ` : ''}
+                            </div >
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">${t('language')}</label>
+                                <select onchange={(e) => setLangInput(e.target.value)} class="w-full p-2.5 border border-slate-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                                    <option value="tr" ${langInput === 'tr' ? 'selected' : ''}>Türkçe</option>
+                                    <option value="en" ${langInput === 'en' ? 'selected' : ''}>English</option>
+                                </select>
+                            </div>
+                            <button onclick="handleSaveProfile()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl mt-4 hover:bg-indigo-700 transition-colors shadow-md">${t('saveProfile')}</button>
+                        
+                            <div class="border-t border-slate-100 pt-4 mt-4">
+                                <button onclick="onLogout()" class="w-full flex justify-center items-center text-red-600 bg-red-50 font-bold py-3 rounded-xl hover:bg-red-100 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2" /><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> ${t('logout')}</button>
+                            </div >
+                        </div>
+                    </div>
                 </div>
+            `;
+        }
 
-                 <!-- Kart 2: Bekleyen Talepler -->
-                <div class="card" style="flex: 1;">
-                    <h3>🟡 Bekleyen Ürün Talepleri</h3>
-                    <p id="dashboard-talep-sayisi">0 adet talep bekliyor.</p>
-                    <button onclick="showSection('urun-talebi-content')">Talepleri Yönet &rarr;</button>
+        // ===============================================
+        // ✨ COMMON UI COMPONENTS 
+        // ===============================================
+
+        function NavItem({ label, isActive, onClick }) {
+             return `
+                <button onclick="onClick()" class="flex flex-col items-center justify-center w-16 transition-colors ${isActive ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-1">${label.includes('Overview') ? '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>' : label.includes('Projects') ? '<path d="M20 15c-5.523 0-10-4.673-10-10S14.477 2 20 2"></path><path d="M12 18V5"></path><path d="M19 12l-7 7-7-7"></path>' : '<polyline points="16 12 12 16 8 12"></polyline></svg>'}
+                    <span class="text-[10px] font-medium">${label}</span>
+                </button>
+            `;
+        }
+
+        function DetailTab({ label, isActive, onClick }) {
+             return `
+                <button onclick="onClick()" class="flex flex-col items-center justify-center py-2 px-0.5 text-[9px] font-bold uppercase tracking-wider rounded-lg transition-all overflow-hidden ${isActive ? 'bg-white text-indigo-700 shadow-sm' : 'text-indigo-100 hover:text-white hover:bg-white/10'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-1">${label.includes('Notes') ? '<path d="M9 18V5a6 6 0 0 1 12 0v13M21 12H3"></path>' : label.includes('Calendar') ? '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>' : label.includes('Materials') ? '<path d="M2 7v4a3 3 0 0 0 6 0V7M19 7v4a3 3 0 0 0-6 0V7"></path><rect x="5" y="3" width="14" height="18" rx="2"></rect></svg>' : label.includes('Docs') ? '<rect x="3" y="2" width="21" height="18" rx="2"></rect><path d="M7 6h10"></path><path d="M7 10h10"></path><path d="M7 14h10"></path></svg>' : '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>'}</svg>
+                    <span class="truncate w-full text-center px-0.5">${label}</span>
+                </button>
+            `;
+        }
+
+        // ===============================================
+        // ✨ CORE COMPONENTS (Rendering Functions)
+        // ===============================================
+
+        function Dashboard({ projects, t }) {
+            const activeProjects = projects.filter(p => p.status === 'Devam Ediyor' || p.status === 'In Progress');
+            const totalNotes = projects.reduce((acc, p) => acc + (p.notes?.length || 0), 0);
+            
+            const todayStr = new Date().toISOString().split('T')[0];
+            
+            const todaysTasks = activeProjects
+                .flatMap(p => p.tasks?.map(task => ({ ...task, projectName: p.title, projectId: p.id })) || [])
+                .filter(task => task.date === todayStr && !task.isDone)
+                .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+            return `
+                <div class="p-6 space-y-6 animate-in fade-in duration-300">
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 p-4 rounded-2xl text-white shadow-md">
+                            <div class="flex items-center space-x-2 opacity-80 mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 mr-2"><path d="M12 3v18m-6-6h12"></path></svg><span class="text-sm font-medium">${t('activeProject')}</span></div>
+                            <p class="text-3xl font-bold">${activeProjects.length}</p>
+                        </div >
+                        <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
+                            <div class="flex items-center space-x-2 text-slate-500 mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 mr-2"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path></svg><span class="text-sm font-medium">${t('totalNotes')}</span></div>
+                            <p class="text-3xl font-bold text-slate-800">${totalNotes}</p>
+                        </div >
+                    </div>
+
+                    <!-- Bugün Yapılacaklar -->
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-amber-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>${t('todayTasks')}</h2>
+                        <div class="space-y-3">
+                            ${todaysTasks.length > 0 ? todaysTasks.map(task => `
+                                <div 
+                                    onclick="onOpenProject(${task.projectId})" 
+                                    class="bg-amber-50 border border-amber-200 p-4 rounded-xl shadow-sm cursor-pointer hover:shadow-md transition-shadow relative overflow-hidden"
+                                >
+                                    <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-400"></div>
+                                    <div class="flex justify-between items-start pl-2">
+                                        <div>
+                                            <h3 class="font-bold text-slate-800">${task.title}</h3>
+                                            <p class="text-xs font-bold text-indigo-600 mt-1 uppercase tracking-wider">${task.projectName}</p>
+                                        </div>
+                                        <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-md flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 19 12 12 18"></polyline></svg> ${task.startTime}
+                                        </span>
+                                    </div>
+                                </div>
+                            `).join('') : `
+                                <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-6 text-center text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-2 opacity-30 text-green-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                                    <p class="text-sm font-medium">${t('noTodayTasks')}</p>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 mb-4">${t('recentProjects')}</h2>
+                        <div class="space-y-3">
+                            ${activeProjects.slice(0, 3).map(project => `
+                                <div onclick="onOpenProject(${project.id})" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex items-center justify-between">
+                                    <div><h3 class="font-semibold text-slate-800">${project.title}</h3><p class="text-sm text-slate-500">${project.client}</p></div>
+                                    <span class="text-xs px-2 py-1 rounded-full font-medium bg-green-100 text-green-700">${project.status}</span>
+                                </div>
+                            `).join('')}
+                            ${activeProjects.length === 0 ? '<p class="text-center text-slate-400 py-4 text-sm">' + t('noProjects') + '</p>' : ''}
+                        </div>
+                    </div>
                 </div>
+            `;
+        }
 
-                 <!-- Kart 3: Son Sevkiyat -->
-                <div class="card" style="flex: 1;">
-                    <h3>🟢 Son Kayıtlı Sevkiyat</h3>
-                    <p id="dashboard-son-sevkiyat">Son sevkiyat kaydı yok.</p>
-                     <button onclick="showSection('sevkiyat-content')">Sevkiyatları Gör &rarr;</button>
+        function ProjectList({ projects, setProjects, onOpenProject, t, requestConfirm }) {
+             const [searchTerm, setSearchTerm] = React.useState('');
+             const [showAddModal, setShowAddModal] = React.useState(false);
+             const [newProject, setNewProject] = React.useState({ title: '', client: '' });
+            
+            // Filtered projects logic (re-run on dependency changes in a real hook)
+            const filteredProjects = projects.filter(p => 
+                p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                p.client.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            // --- Event Handlers ---
+            const handleAddProject = (e) => {
+                e.preventDefault();
+                if (!newProject.title) return;
+                
+                const project = {
+                    id: Date.now(),
+                    title: newProject.title,
+                    client: newProject.client,
+                    status: "Devam Ediyor",
+                    date: new Date().toISOString().split('T')[0],
+                    details: { address: '', type: '', area: '', startDate: '', endDate: '', clientInfo: '' }, 
+                    techDocs: [], 
+                    notes: [],
+                    materials: [],
+                    materialStock: [], 
+                    tasks: [],
+                    collaborators: []
+                };
+                
+                setProjects(prev => [project, ...prev]); // Update state globally
+                setNewProject({ title: '', client: '' });
+                setShowAddModal(false);
+            };
+
+            const deleteProject = (e, id) => {
+                 e.stopPropagation(); 
+                 requestConfirm(t('deleteConfirm'), () => {
+                     // Update state globally
+                     setProjects(prev => prev.filter(p => p.id !== id));
+                 });
+            }
+
+
+             return `
+                <div class="p-6 h-full flex flex-col relative">
+                    <div class="relative mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-3 text-slate-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16" y2="16"></line></svg>
+                        <input type="text" placeholder="${t('projectOrClient')}" class="w-full bg-white border border-slate-200 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" value="${searchTerm}" onchange="setSearchTerm(this.value)" />
+                    </div >
+                    <div class="space-y-3 flex-1 overflow-y-auto pb-6">
+                        ${filteredProjects.map(project => {
+                            const isCompleted = project.status === 'Tamamlandı' || project.status === 'Completed';
+                            return `
+                                <div onclick="onOpenProject(${project.id})" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-indigo-300 transition-colors flex justify-between items-center ${isCompleted ? 'opacity-70 bg-slate-50' : ''}">
+                                    <div>
+                                        <div class="flex items-center mb-1">
+                                            <h3 class="font-bold mr-2 ${isCompleted ? 'text-slate-600' : 'text-slate-800'}">${project.title}</h3>
+                                            <span class="text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold ${isCompleted ? 'bg-slate-200 text-slate-600' : 'bg-green-100 text-green-700'}">${isCompleted ? t('completed') : project.status}</span>
+                                        </div>
+                                        <div class="flex items-center text-xs text-slate-500 font-medium"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 text-slate-400"><path d="M19 19H5v-12h14v12z"></path></svg> ${project.client || 'Müşteri Yok'}</div >
+                                    </div>
+                                    <button onclick="event.stopPropagation(); deleteProject(event, ${project.id})" class="p-2 bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="${t('deleteConfirm')}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><perp></svg>
+                                    </button>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <button onclick="setShowAddModal(true)" class="absolute bottom-8 right-6 w-14 h-14 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-indigo-700 transition-colors z-30">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                    </button>
+
+                    <!-- Add Modal -->
+                    ${showAddModal ? `
+                        <div class="absolute inset-0 bg-slate-900/40 z-40 flex items-end sm:items-center justify-center animate-in fade-in">
+                            <div class="bg-white w-full sm:w-11/12 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10">
+                                <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold">${t('createNewProject')}</h3><button onclick="setShowAddModal(false)" class="p-2 bg-slate-100 rounded-full text-slate-500"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div >
+                                <form onsubmit="handleAddProject(event)">
+                                    <div class="space-y-4">
+                                        <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('projectName')}</label><input required type="text" value="${newProject.title}" onchange="setNewProject({...newProject, title: event.target.value})" class="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Örn: Bebek Köşkü Restorasyon" /></div>
+                                        <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('clientName')}</label><input type="text" value="${newProject.client}" onchange="setNewProject({...newProject, client: event.target.value})" class="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Örn: Ayşe Hanım" /></div>
+                                        <button type="submit" class="w-full bg-indigo-600 text-white font-bold rounded-xl p-4 mt-4 hover:bg-indigo-700">${t('saveProject')}</button>
+                                    </div >
+                                </form>
+                            </div>
+                        </div>
+                    ` : ''}
                 </div>
-            </div>
+            `;
+        }
 
-            <!-- Eklenen Özellik: Özet İstatistikler -->
-            <h3>📈 Proje Genel Durum Analizi</h3>
-             <div class="card" style="display: flex; justify-content: space-around;">
-                 <div><strong>Toplam İş Kalemi:</strong> <span id="total-gorev">0</span></div>
-                 <div><strong>Tamamlanan Görevler:</strong> <span id="done-gorev">0</span></div>
-                 <div><strong>Risk Seviyesi:</strong> <span style="color: var(--success-color);">Düşük</span></div>
-             </div>
+        function ProjectDetail({ project, onBack, t }) {
+            const [activeTab, setActiveTab] = React.useState('notes');
+            const isReadOnly = project.status === 'Tamamlandı' || project.status === 'Completed';
 
-        </section>
+            // Note: State update functions (updateProject) and Context/Props must be passed down from the main App render function to simulate dependency tracking.
 
-        <!-- 2. PROJE BİLGİLERİ -->
-        <section id="proje-content" class="hidden section-container">
-            <h2>📑 Proje Genel Bilgileri</h2>
-            <div class="card">
-                <form id="project-info-form">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div class="form-group">
-                            <label for="clientName">Müşteri Adı</label>
-                            <input type="text" id="clientName" required>
-                        </div>
-                         <div class="form-group">
-                            <label for="location">Proje Lokasyonu</label>
-                            <input type="text" id="location" required>
-                        </div>
+            return `
+                <div class="min-h-screen bg-slate-50 flex flex-col animate-in slide-in-from-right-8 duration-300">
+                    <header class="bg-indigo-600 text-white px-4 py-4 pt-6 sticky top-0 z-20 shadow-md">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3 flex-1 overflow-hidden pr-2">
+                                <button onclick="onBack()" class="p-2 hover:bg-white/20 rounded-full transition-colors flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12-7" x2="9" y2="12"></line><polyline points="22 17 13 10 6 13"></polyline></svg></button>
+                                <div class="overflow-hidden"><h1 class="text-lg font-bold truncate">${project.title}</h1><p class="text-indigo-200 text-sm truncate">${project.client}</p></div >
+                            </div>
+                            <div class="flex items-center space-x-3 flex-shrink-0">
+                                <button onclick="toggleProjectStatus()" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center ${isReadOnly ? 'bg-amber-400 text-amber-900 hover:bg-amber-300' : 'bg-green-500 text-white hover:bg-green-400'}">
+                                    ${isReadOnly ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"></circle><path d="M12 v-8"></path><path d="M12 u 8"></path></svg>'}</svg> ${isReadOnly ? t('makeActive') : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"></circle><path d="M12 v-8"></path><path d="M12 u 8"></path></svg> ' + t('finishProject')}</button>
+                            </div>
+                        </div >
+                        
+                        <!-- SABİT TAB MENU -->
+                        <div class="grid grid-cols-5 w-full bg-indigo-700/50 p-1 rounded-xl gap-1 mt-2">
+                          ${DetailTab({ label: t('notes'), isActive: activeTab === 'notes', onClick: () => setActiveTab('notes') })}${DetailTab({ label: t('calendar'), isActive: activeTab === 'tasks', onClick: () => setActiveTab('tasks') })}${DetailTab({ label: t('materials'), isActive: activeTab === 'materials', onClick: () => setActiveTab('materials') })}${DetailTab({ label: t('techDocs'), isActive: activeTab === 'docs', onClick: () => setActiveTab('docs') })}${DetailTab({ label: t('team'), isActive: activeTab === 'team', onClick: () => setActiveTab('team') })}${
+                    '</div>
+                    
+                    <div class="flex-1 p-4 pb-20">
+                        ${isReadOnly ? `
+                            <div class="bg-amber-50 text-amber-800 p-3 rounded-xl mb-4 text-xs font-medium flex items-center border border-amber-200 shadow-sm animate-in fade-in"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 flex-shrink-0"><path d="M15 7h3v4"></path><line x1="21" y1="9" x2="16" y2="16"></line></svg>${t('readOnlyMsg')}</div >
+                        ` : ''}
+
+                        <!-- Content Rendering -->
+                        ${activeTab === 'notes' ? ProjectNotes({ project, t, isReadOnly: isReadOnly, showToast: showToast, profile: { fullName: "Ahmet Mimaroğlu" }, onAddNotification: (msg) => console.log('Notification:', msg), onRequestConfirm: requestConfirm }) : ''}
+                        ${activeTab === 'tasks' ? ProjectCalendar({ project, t, isReadOnly: isReadOnly, onRequestConfirm: requestConfirm }) : ''}
+                        ${activeTab === 'materials' ? ProjectMaterials({ project, t, isReadOnly: isReadOnly, profile: { fullName: "Ahmet Mimaroğlu" }, onAddNotification: (msg) => console.log('Notification:', msg), onRequestConfirm: requestConfirm }) : ''}
+                        ${activeTab === 'docs' ? ProjectDocs({ project, t, isReadOnly: isReadOnly, showToast: showToast, profile: { fullName: "Ahmet Mimaroğlu" }, onRequestConfirm: requestConfirm }) : ''}
+                        ${activeTab === 'team' ? ProjectTeam({ project, t, isReadOnly: isReadOnly, onRequestConfirm: requestConfirm }) : ''}
+
                     </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                         <div class="form-group">
-                            <label for="startDate">Başlangıç Tarihi</label>
-                            <input type="date" id="startDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="endDate">Planlanan Bitiş Tarihi</label>
-                            <input type="date" id="endDate" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Proje Açıklaması / Önemli Notlar</label>
-                        <textarea id="description" rows="4"></textarea>
-                    </div>
-                    <button type="submit" class="btn">Proje Bilgilerini Kaydet</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- 3. İŞ TAKİBİ (KANBAN BOARD) -->
-        <section id="is-takibi-content" class="hidden section-container">
-            <h2>✅ İş Takibi Panosu</h2>
-            <div class="card">
-                <button onclick="openModal('job-form')"><i class="fas fa-plus-circle"></i> Yeni Görev Ekle</button>
-            </div>
-             <!-- Kanban Board -->
-            <div id="job-tracking-content">
-                <div class="kanban-column todo" id="todo-tasks">
-                    <h3>📌 Yapılacaklar (To Do)</h3>
-                    <!-- Kartlar JS ile yüklenecek -->
                 </div>
-                 <div class="kanban-column progress" id="progress-tasks">
-                    <h3>🛠️ Devam Ediyor (In Progress)</h3>
-                     <!-- Kartlar JS ile yüklenecek -->
+            `;
+        }
+
+
+        // ===============================================
+        // ✨ TAB IMPLEMENTATIONS (Placeholder/Simplified)
+        // NOTE: Due to the complexity of state passing and event handling in a single HTML file context, 
+        // these sections are simplified placeholders that assume global functions handle state updates.
+        // The full React logic is replaced by function calls mimicking props/state.
+        // ===============================================
+
+        function ProjectNotes({ project, t, isReadOnly, showToast, profile, onAddNotification, onRequestConfirm }) {
+             return `
+                <div class="space-y-4">
+                    <!-- Note Writing Area -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                        <textarea placeholder="${t('writeNote')}" class="w-full bg-slate-50 border-none rounded-xl p-3 text-sm focus:ring-0 outline-none resize-none h-20"></textarea>
+                         <!-- File/Media Controls Area -->
+                        <div class="flex flex-wrap gap-2 mt-2">
+                             <button onclick="showToast('${t('image')} fonksiyonu çalışacak')" class="flex items-center text-slate-500 hover:text-indigo-600 text-xs font-medium px-2 py-1.5 rounded bg-slate-50 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg> ${t('image')}</button>
+                             <button onclick="showToast('${t('attachFile')} fonksiyonu çalışacak')" class="flex items-center text-slate-500 hover:text-indigo-600 text-xs font-medium px-2 py-1.5 rounded bg-slate-50 transition-colors"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="17"></line></svg> ${t('attachFile')}</button>
+                             <button onclick="showToast('${t('link')} fonksiyonu çalışacak')" class="flex items-center text-slate-500 hover:text-indigo-600 text-xs font-medium px-2 py-1.5 rounded bg-slate-50 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="12" x2="12" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5.5l-2.25 4.25-2.25-4.25H9.5z"></path></svg> Link</button>
+                             <button onclick="showToast('Ses kaydı fonksiyonu çalışacak')" class="flex items-center text-xs font-medium px-2 py-1.5 rounded transition-colors bg-slate-50 text-slate-500 hover:text-indigo-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 3 12 21 17 16 13"></polygon></svg> ${t('audio')}</button>
+                        </div>
+
+                        <div class="flex justify-between items-center mt-2 border-t border-slate-100 pt-3">
+                            <!-- Bu kısım butonlarla doldurulmalı -->
+                            <button onclick="showToast('${t('addNote')} fonksiyonu çalışacak')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-indigo-700">${t('addNote')}</button>
+                        </div>
+                    </div>
+
+                    <!-- Not Listesi -->
+                     <div class="space-y-3">
+                         <!-- Örnek bir not kartı yapısı -->
+                          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col group relative overflow-hidden">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex flex-col"><span class="text-[10px] text-slate-400 font-medium">Bugün Tarihi</span><span>${t('authorPrefix')} Ahmet Mimaroğlu</span></div>
+                                <div>
+                                    <button onclick="showToast('${t('edit')} fonksiyonu çalışacak')" class="p-1 text-slate-300 hover:text-indigo-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1-4 4l4 4 4-4z"></path><line x1="7" y1="7" x2="17" y2="7"></line></svg></button>
+                                    <button onclick="showToast('${t('deleteConfirm')} fonksiyonu çalışacak')" class="p-1 text-slate-300 hover:text-red-500"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><perp></svg></button>
+                                </div>
+                            </div>
+                            <!-- Not içeriği -->
+                             <p class="text-slate-700 text-sm whitespace-pre-wrap leading-relaxed mb-2">Giriş lobisi için ahşap panel bakılacak.</p>
+                         </div>
+                    </div>
                 </div>
-                <div class="kanban-column done" id="done-tasks">
-                    <h3>✅ Tamamlandı (Done)</h3>
-                     <!-- Kartlar JS ile yüklenecek -->
+            `;
+        }
+
+         function ProjectCalendar({ project, t, isReadOnly }) {
+             return `
+                <div class="space-y-4">
+                    <!-- Calendar Header -->
+                    <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <div><h3 class="font-bold text-slate-800 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-indigo-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> ${t('workCalendar')}</h3 > <p class="text-xs text-slate-500 mt-1">${t('fieldAndOffice')}</p></div>
+                        <button onclick="showToast('${t('addTask')} fonksiyonu çalışacak')" class="bg-indigo-50 text-indigo-600 p-2 rounded-lg font-bold hover:bg-indigo-100 transition-colors">+</button>
+                    </div >
+
+                    <!-- Task List -->
+                    <div class="space-y-3">
+                        <!-- Örnek bir görev kartı yapısı (Bugün vurgulu) -->
+                        <div class="bg-white p-3 rounded-xl border flex items-center shadow-sm transition-all relative overflow-hidden border-amber-400">
+                            <div class="absolute top-0 right-0 bg-amber-500 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-bl-lg">${t('todayHighlight')}</div>
+                            <div class="flex flex-col items-center justify-center p-2 rounded-lg w-14 mr-3 border bg-amber-100 text-amber-800">
+                                <span class="text-[10px] font-bold uppercase opacity-80">Bugün</span><span class="text-lg font-black leading-none">24</span>
+                            </div>
+                            <div class="flex-1 cursor-pointer">
+                                <h4 class="text-sm font-bold pr-10">Belediye ruhsat başvurusu</h4>
+                                <div class="flex items-center mt-1 space-x-3 text-xs text-slate-500 font-medium"><span class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"></circle><path d="M12 v-8"></path><path d="M12 u 8"></path></svg> 10:00 - 11:30</span>${/* Reminder Icon */}</div>
+                            </div>
+                        </div>
+
+                         <!-- Bitmiş görev kartı -->
+                          <div class="bg-white p-3 rounded-xl border flex items-center shadow-sm transition-all relative overflow-hidden border-slate-200 opacity-60">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-green-500"><circle cx="20" cy="20" r="2"></circle><path d="M22 12H6"></path></svg>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-bold pr-10 line-through text-slate-500">İlk toplantı notları alındı</h4>
+                                     <div class="flex items-center mt-1 space-x-3 text-xs text-slate-500 font-medium"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 v-8"></path><path d="M12 u 8"></path></svg> Tarih</div>
+                                </div>
+                            </div>
+
+                    </div >
                 </div>
-            </div>
+            `;
+        }
 
-            <!-- Görev Ekleme/Düzenleme Modal Alanı (Gizli Başlangıçta) -->
-            <div id="job-form" class="card hidden">
-                 <h3>Yeni İş Görevi Oluştur</h3>
-                 <form id="job-form-submit">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                         <div class="form-group">
-                            <label for="taskName">Görev Adı</label>
-                            <input type="text" id="taskName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="assignedTo">Atanan Kişi/Ekip</label>
-                            <input type="text" id="assignedTo" required>
-                        </div>
+         function ProjectMaterials({ project, t, isReadOnly }) {
+             return `
+                <div class="space-y-4">
+                     <!-- Sub Tab Selection -->
+                    <div class="flex bg-slate-200 p-1 rounded-xl">
+                        <button onclick="setSubTab('selected')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-colors bg-white text-slate-800 shadow-sm"> ${t('selectedMaterials')} </button>
+                        <button onclick="setSubTab('stock')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-colors text-slate-500 hover:bg-slate-200"> ${t('stockInfo')} </button>
                     </div>
 
-                    <div class="form-group">
-                        <label for="taskDetails">Açıklama / Detaylar</label>
-                        <textarea id="taskDetails" rows="3"></textarea>
-                    </div>
-                     <div style="display: flex; gap: 10px;">
-                         <button type="submit" class="btn"><i class="fas fa-save"></i> Görevi Oluştur</button>
-                         <button type="button" onclick="closeModal('job-form')" class="btn" style="background-color: #6c757d;">İptal</button>
-                     </div>
-                 </form>
-            </div>
-
-
-        </section>
-
-        <!-- 4. ÜRÜN TALEBİ -->
-        <section id="urun-talebi-content" class="hidden section-container">
-            <h2>📦 Ürün Talep Sistemi</h2>
-            <div class="card">
-                <h3>Yeni Talep Oluştur</h3>
-                 <form id="product-request-form">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div class="form-group">
-                            <label for="itemRequired">Ürün Adı / Kodu</label>
-                            <input type="text" id="itemRequired" required placeholder="Örn: Demir Profil, C30 Harç">
-                        </div>
-                        <div class="form-group">
-                            <label for="quantityNeeded">Adet / Miktar</label>
-                            <input type="number" id="quantityNeeded" required min="1">
-                        </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                         <div class="form-group">
-                            <label for="neededByDate">Gerektiği Tarih</label>
-                            <input type="date" id="neededByDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="requestingFrom">Talebi Yapan Birim</label>
-                            <input type="text" id="requestingFrom" required placeholder="Elektrik, Mekanik vb.">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="notes">Ek Notlar (Depo yeri, özel durum vb.)</label>
-                        <textarea id="notes" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn">Talebi Gönder</button>
-                </form>
-            </div>
-
-             <!-- Talep Listeleme -->
-             <div class="card">
-                 <h3>📜 Tüm Aktif Talepler</h3>
-                 <table id="request-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                     <thead>
-                         <tr style="background-color: #eee;">
-                             <th style="padding: 10px; text-align: left;">Tarih</th>
-                             <th style="padding: 10px; text-align: left;">Ürün / Kod</th>
-                             <th style="padding: 10px; text-align: left;">Miktar</th>
-                             <th style="padding: 10px; text-align: left;">Talebi Yapan</th>
-                             <th style="padding: 10px; text-align: left;">Durum</th>
-                         </tr>
-                     </thead>
-                     <tbody id="request-list">
-                         <!-- JS ile yüklenecek -->
-                     </tbody>
-                 </table>
-             </div>
-
-        </section>
-
-        <!-- 5. SEVKİYAT KAYDI -->
-        <section id="sevkiyat-content" class="hidden section-container">
-            <h2>🚚 Sevkiyat ve Malzeme Giriş/Çıkış Kaydı</h2>
-            <div class="card">
-                <h3>Yeni Sevkiyat Kaydı Ekle</h3>
-                 <form id="shipment-form">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                         <div class="form-group">
-                            <label for="shipmentDate">Tarih</label>
-                            <input type="date" id="shipmentDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="movementType">Hareket Tipi</label>
-                            <select id="movementType" required>
-                                <option value="">Seçiniz</option>
-                                <option value="Giriş (Teslim Alma)">📦 Giriş (Yeni Malzeme)</option>
-                                <option value="Çıkış (Sahaya Kullanım)">➡️ Çıkış (Sahadan Çıkarma)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                         <label for="trackingId">Takip/Fatura No</label>
-                        <input type="text" id="trackingId" required placeholder="Örn: FATURA-2026-1234">
-                    </div>
-                     <div class="form-group">
-                        <label for="itemsList">Ürünler / Miktarlar (Virgülle ayırın)</label>
-                        <textarea id="itemsList" rows="3" placeholder="Örn: Demir Profil: 50, Harç: 100"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                         <label for="notes">Açıklamalar</label>
-                        <textarea id="shipmentNotes" rows="2"></textarea>
-                    </div>
-                    <button type="submit" class="btn">Kaydı Oluştur</button>
-                </form>
-            </div>
-
-            <div class="card">
-                 <h3>📜 Tüm Sevkiyat Kayıtları</h3>
-                 <table id="shipment-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                     <thead>
-                         <tr style="background-color: #eee;">
-                             <th style="padding: 10px; text-align: left;">Tarih</th>
-                             <th style="padding: 10px; text-align: left;">Tip</th>
-                             <th style="padding: 10px; text-align: left;">Takip No</th>
-                             <th style="padding: 10px; text-align: left;">İşlem Detayları</th>
-                         </tr>
-                     </thead>
-                     <tbody id="shipment-list">
-                         <!-- JS ile yüklenecek -->
-                     </tbody>
-                 </table>
-            </div>
-
-        </section>
-
-        <!-- 6. HATIRLATICILAR -->
-        <section id="hatirlatici-content" class="hidden section-container">
-            <h2>🔔 Hatırlatıcılar ve Kontrol Noktaları</h2>
-             <div class="card">
-                <h3>Yeni Hatırlatıcı Oluştur</h3>
-                 <form id="reminder-form">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div class="form-group">
-                            <label for="reminderDate">Tarih</label>
-                            <input type="date" id="reminderDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="reminderTime">Saat</label>
-                            <input type="time" id="reminderTime" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reminderMessage">Mesaj / Hatırlatılacak Konu</label>
-                        <textarea id="reminderMessage" rows="3" required placeholder="Örn: Yarıncı haftanın imalat kontrol toplantısı."></textarea>
-                    </div>
-                    <button type="submit" class="btn">Hatırlatıcı Ekle</button>
-                </form>
-            </div>
-
-             <div class="card">
-                 <h3>🗓️ Aktif Hatırlatıcılar</h3>
-                  <table id="reminder-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                     <thead>
-                         <tr style="background-color: #eee;">
-                             <th style="padding: 10px; text-align: left;">Tarih</th>
-                             <th style="padding: 10px; text-align: left;">Saat</th>
-                             <th style="padding: 10px; text-align: left;">Mesaj</th>
-                         </tr>
-                     </thead>
-                     <tbody id="reminder-list">
-                         <!-- JS ile yüklenecek -->
-                     </tbody>
-                 </table>
-            </div>
-        </section>
-
-         <!-- 7. GÜVENLİK / EK ÖZELLİK (USER ENHANCEMENT) -->
-        <section id="guvenlik-content" class="hidden section-container">
-            <h2>🚧 İş Güvenliği ve Kontrol Listesi</h2>
-             <div class="card">
-                <h3>Günlük Saha Güvenlik Check-List</h3>
-                 <form id="safety-checklist-form">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr;">
-                        <div class="form-group">
-                            <label for="checkDate">Tarih</label>
-                            <input type="date" id="checkDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="inspectorName">Kontrol Eden Kişi</label>
-                            <input type="text" id="inspectorName" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                         <label style="margin-top: 10px;">Genel Güvenlik Kontrolleri (Lütfen ilgili kutucuğu işaretleyin)</label>
-                         <!-- Checkbox sistemi -->
-                         <div style="display: flex; gap: 30px; margin-bottom: 20px;">
-                            <div><input type="checkbox" id="scaffoldingCheck"><label for="scaffoldingCheck">İskele Güvenliği Kontrolü</label></div>
-                            <div><input type="checkbox" id="electricalCheck"><label for="electricalCheck">Elektrik Tesisatı Kontrolü</label></div>
-                            <div><input type="checkbox" id="safetyGearCheck"><label for="safetyGearCheck">Kişisel Koruyucu Donanım (KKD) Kullanımı</label></div>
-                            <div><input type="checkbox" id="siteCleanlinessCheck"><label for="siteCleanlinessCheck">Şantiye Temizliği ve Düzeni</label></div>
+                    <!-- Selected Materials Tab Content -->
+                    <div id="material-selected-content" class="space-y-3">
+                        <!-- Add Material Button -->
+                         <button onclick="showAddMat(true)" class="w-full py-3 rounded-xl text-xs font-bold uppercase tracking-wider border transition-colors bg-indigo-50 text-indigo-700 hover:bg-indigo-100">+ ${t('addNew')}</button>
+                         <div id="material-list-display">
+                            <!-- Material Card 1 -->
+                             <div class="bg-white p-4 rounded-xl border-l-4 border-l-indigo-500 shadow-sm flex justify-between items-start">
+                                <div class="flex-1"><span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-bold uppercase">Zemin</span><h4 class="font-bold text-slate-800 mt-1">60x120 Mat Seramik</h4><div class="flex text-xs text-slate-500 mt-2 space-x-3"><span class="font-medium text-slate-400">${t('brandLabel')}: Vitra</span><span class="font-medium text-slate-400">${t('areaLabel')}: Lobi</span></div></div>
+                                <div class="flex space-x-1">
+                                    <button onclick="showToast('${t('edit')} fonksiyonu çalışacak')" class="text-slate-300 hover:text-indigo-600 p-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1-4 4l4 4 4-4z"></path><line x1="7" y1="7" x2="17" y2="7"></line></svg></button>
+                                    <button onclick="showToast('${t('deleteConfirm')} fonksiyonu çalışacak')" class="text-slate-300 hover:text-red-500 p-1"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path></svg></button>
+                                </div>
+                            </div>
                          </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="safetyNotes">Tespit Edilen Riskler / Öneriler (Varsa)</label>
-                        <textarea id="safetyNotes" rows="3"></textarea>
+                    <!-- Stock Info Tab Content -->
+                    <div id="material-stock-content" class="space-y-4 hidden">
+                        <!-- Search and Add Form (Simplified) -->
+                        <div class="relative"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-2.5 text-slate-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16" y2="16"></line></svg><input type="text" placeholder="${t('searchStock')}" class="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-4 text-sm focus:outline-none focus:border-indigo-500"/></div>
+
+                        <!-- Stock Input Form -->
+                         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2">${t('addStock')} / ${t('requestMaterial')}</h3>
+                            <!-- Inputs simplified -->
+                             <div class="flex space-x-2"><input type="text" placeholder="${t('materialName')}" class="w-1/2 p-2 border border-slate-200 rounded-lg text-sm outline-none bg-slate-50"/><input type="number" placeholder="${t('quantity')}" class="w-1/2 p-2 border border-slate-200 rounded-lg text-sm outline-none bg-slate-50"/></div>
+                            <div class="flex space-x-2 pt-1">
+                                <button onclick="showToast('${t('addStock')} çalışacak')" class="flex-1 bg-slate-900 text-white rounded-lg py-2.5 text-xs font-bold uppercase tracking-wider shadow-sm disabled:opacity-50">${t('addStock')}</button>
+                                <button onclick="showToast('${t('requestMaterial')} çalışacak')" class="flex-1 bg-amber-500 text-white rounded-lg py-2.5 text-xs font-bold uppercase tracking-wider shadow-sm hover:bg-amber-600">${t('requestMaterial')}</button>
+                            </div>
+                        </div>
+
+                         <!-- Stock Item Card -->
+                          <div class="bg-white p-3 rounded-lg border border-slate-200 flex flex-col shadow-sm">
+                             <div class="flex items-center justify-between">
+                                <div class="flex items-center"><div class="p-2 rounded-lg mr-3 shadow-inner bg-green-50 text-green-600 border border-green-100">${/* Icon */}<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21l-2-2m-2 0V7a2 2 0 0 1 2-2h2"></path><circle cx="12" cy="7" r="4"></circle></svg></div><div ><h4 class="text-sm font-bold text-slate-800">Derz Dolgu</h4><p class="text-xs text-slate-500 font-bold mt-0.5">5 Paket</p></div></div>
+                                <div class="flex flex-col items-end space-y-1">
+                                    <span class="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded bg-green-100 text-green-700">${t('statusAvailable')}</span>
+                                </div >
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn">Kontrol Listesini Kaydet</button>
-                </form>
-            </div>
-
-             <div class="card">
-                 <h3>📜 Geçmiş Güvenlik Kontrolleri</h3>
-                  <table id="safety-history-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                     <thead>
-                         <tr style="background-color: #eee;">
-                             <th style="padding: 10px; text-align: left;">Tarih</th>
-                             <th style="padding: 10px; text-align: left;">Kontrol Eden</th>
-                             <th style="padding: 10px; text-align: left;">Durum Özeti</th>
-                         </tr>
-                     </thead>
-                     <tbody id="safety-list">
-                         <!-- JS ile yüklenecek -->
-                     </tbody>
-                 </table>
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <script>
-        // =============================================
-        // JAVASCRIPT MANTIĞI - UYGULAMA ÇEKİRDEĞİ
-        // =============================================
-
-        const STORAGE_KEYS = {
-            PROJECT: 'projectInfo',
-            JOBS: 'jobTasks',
-            REQUESTS: 'productRequests',
-            SHIPMENTS: 'shipmentLogs',
-            REMINDERS: 'reminderList',
-            SAFETY: 'safetyChecklist'
-        };
-
-        // ---------------------------------------------
-        // 1. MODAL VE NAVİGASYON FONKSİYONLARI
-        // ---------------------------------------------
-
-        /**
-         * Sadece bir bölümü gösterir ve diğerlerini gizler (SPA Router mantığı).
-         * @param {string} sectionId - Gösterilecek bölümün ID'si.
-         */
-        function showSection(sectionId) {
-            document.querySelectorAll('section').forEach(section => {
-                section.classList.add('hidden');
-            });
-            document.getElementById(sectionId).classList.remove('hidden');
-
-            // Navigasyon butonlarını güncelle
-            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
-            const navButton = document.querySelector(`[id="nav-${sectionId.replace('-content', '')}"]`);
-            if (navButton) {
-                 navButton.classList.add('active');
-            }
-
-             // Sayfa yüklendiğinde ilgili verileri yeniden yükle
-            if (sectionId === 'dashboard-content') {
-                updateDashboard();
-            } else if (sectionId === 'job-tracking-content') {
-                loadJobTasks();
-            } else if (sectionId === 'product-request-content') {
-                 renderRequests();
-            } else if (sectionId === 'sevkiyat-content') {
-                 renderShipments();
-            } else if (sectionId === 'hatirlatici-content') {
-                renderReminders();
-            } else if (sectionId === 'guvenlik-content') {
-                renderSafetyChecks();
-            }
-
-        }
-
-        // Global Modal Kontrolü
-        function openModal(formId) {
-             document.getElementById(formId).classList.remove('hidden');
-             window.scrollTo({ top: document.getElementById(formId).offsetTop - 50, behavior: 'smooth' }); // Sayfayı formu görünür yap
-        }
-         function closeModal(formId) {
-             document.getElementById(formId).classList.add('hidden');
-         }
-
-        // Navigasyon Event Listeners
-        document.getElementById('nav-dashboard').addEventListener('click', () => showSection('dashboard-content'));
-        document.getElementById('nav-proje').addEventListener('click', () => showSection('proje-content'));
-        document.getElementById('nav-is-takibi').addEventListener('click', () => showSection('job-tracking-content'));
-        document.getElementById('nav-urun-talebi').addEventListener('click', () => showSection('product-request-content'));
-        document.getElementById('nav-sevkiyat').addEventListener('click', () => showSection('sevkiyat-content'));
-        document.getElementById('nav-hatirlatici').addEventListener('click', () => showSection('hatirlatici-content'));
-         document.getElementById('nav-guvenlik').addEventListener('click', () => showSection('guvenlik-content'));
-
-
-        // ---------------------------------------------
-        // 2. PROJE BİLGİLERİ MODÜLÜ (SETUP)
-        // ---------------------------------------------
-
-        const projectForm = document.getElementById('project-info-form');
-        projectForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const data = {
-                clientName: document.getElementById('clientName').value,
-                location: document.getElementById('location').value,
-                startDate: document.getElementById('startDate').value,
-                endDate: document.getElementById('endDate').value,
-                description: document.getElementById('description').value
-            };
-
-            localStorage.setItem(STORAGE_KEYS.PROJECT, JSON.stringify(data));
-            alert("✅ Proje bilgileri başarıyla güncellendi!");
-        });
-
-        function loadProjectInfo() {
-            const projectData = localStorage.getItem(STORAGE_KEYS.PROJECT);
-            if (projectData) {
-                const data = JSON.parse(projectData);
-                document.getElementById('clientName').value = data.clientName;
-                document.getElementById('location').value = data.location;
-                document.getElementById('startDate').value = data.startDate;
-                document.getElementById('endDate').value = data.endDate;
-                document.getElementById('description').value = data.description;
-            } else {
-                 // İlk açılışta varsayılan değerleri doldurmak iyi olabilir
-                 const today = new Date().toISOString().split('T')[0];
-                document.getElementById('startDate').value = today;
-            }
-        }
-
-        // ---------------------------------------------
-        // 3. İŞ TAKİBİ MODÜLÜ (KANBAN)
-        // ---------------------------------------------
-
-        function getJobTasks() {
-            return JSON.parse(localStorage.getItem(STORAGE_KEYS.JOBS)) || [];
-        }
-
-        /** Görev Kartını Oluşturan Yardımcı Fonksiyon */
-        function createJobCardElement(task) {
-            const card = document.createElement('div');
-            card.className = `job-card ${task.status}`; // Status'e göre renk atanacak
-            card.innerHTML = `
-                <strong>${task.name}</strong><br>
-                <small style="color: #666;">Atanan: ${task.assignedTo}</small><br>
-                <p style="margin-top: 10px; font-size: 0.9em;">${task.description.substring(0, 80)}...</p>
+                </div>
             `;
-            card.onclick = () => editTask(task); // Tıklanınca düzenleme modülünü açar
-            return card;
         }
 
-         /** Kanban Board'u Yükler */
-        function loadJobTasks() {
-            const tasks = getJobTasks();
-            const todoEl = document.getElementById('todo-tasks');
-            const progressEl = document.getElementById('progress-tasks');
-            const doneEl = document.getElementById('done-tasks');
+         function ProjectDocs({ project, t, isReadOnly }) {
+             return `
+                <div class="space-y-6">
+                    <!-- Info Form -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
+                            <h3 class="text-sm font-bold text-slate-800 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-indigo-500"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg> ${t('projectInfo')}</h3>
+                            <button onclick="showToast('${t('edit')} fonksiyonu çalışacak')" class="text-indigo-600 hover:bg-indigo-50 p-1.5 rounded transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1-4 4l4 4 4-4z"></path><line x1="7" y1="7" x2="17" y2="7"></line></svg></button>
+                        </div>
 
-            // Temizle
-            [todoEl, progressEl, doneEl].forEach(el => el.innerHTML = '');
+                        <!-- Upload Area -->
+                        <div class="bg-indigo-50 border-2 border-indigo-200 border-dashed rounded-2xl p-5 text-center cursor-pointer hover:bg-indigo-100 transition-colors shadow-sm mb-4">
+                             <input type="file" id="docInput" class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx,.dwg,.skp,.png,.jpg" onchange="showToast('Dosya yüklendi')"/>
+                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm text-indigo-500"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path></svg></div>
+                            <p class="text-sm font-bold text-indigo-900">${t('uploadDoc')}</p>
+                            <p class="text-[9px] text-indigo-500 mt-1 font-black uppercase tracking-widest">${t('pdfDesc')}</p>
+                        </div>
 
-            // Yeniden oluştur
-            tasks.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); // Tarihe göre sıralama yap
-            tasks.forEach(task => {
-                let targetContainer;
-                if (task.status === 'todo') targetContainer = todoEl;
-                else if (task.status === 'progress') targetContainer = progressEl;
-                else if (task.status === 'done') targetContainer = doneEl;
+                        <!-- Document List -->
+                        <div class="grid gap-3">
+                             <!-- Sample Doc Card -->
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between group">
+                                <a href="#" download="${t('docName')}" class="flex flex-1 items-center overflow-hidden">
+                                    <div class="bg-slate-50 text-slate-500 p-2.5 rounded-lg mr-3 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors border border-slate-100"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V7l-5-5z"></path></svg><div class="truncate pr-4 flex-1">
+                                         <p class="text-sm font-bold text-slate-700 truncate group-hover:text-indigo-600 transition-colors">Proje Mimari Planı (V2)</p>
+                                         <p class="text-[9px] text-slate-400 mt-0.5 font-black uppercase tracking-widest">24.08.2026 • Ahmet Mimaroğlu</p>
+                                    </div>
+                                </a>
+                                <div class="flex items-center space-x-1 pl-2 border-l border-slate-100">
+                                   <button onclick="showToast('Download')"(class="p-2 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button>
+                                   <button onclick="showToast('Delete')"(class="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path></svg></button>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
-                const card = createJobCardElement(task);
-                targetContainer.appendChild(card);
-            });
+         function ProjectTeam({ project, t, isReadOnly }) {
+             return `
+                <div class="space-y-6">
+                     <!-- Share Block -->
+                    <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl flex items-start space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-600 mt-1 flex-shrink-0"><path d="M18 16.08A3 3 0 0 0 14.3 9V7a3 3 0 0 0-2-2h-5"></path><polyline points="5 17 12 12 19 7"></polyline><line x1="12" y1="19" x2="12-2"></line></svg>
+                        <div>
+                            <h3 class="text-sm font-bold text-indigo-900 mb-1">${t('shareProject')}</h3>
+                            <p class="text-xs text-indigo-700 leading-relaxed">${t('shareDesc')}</p>
+                        </div >
+                    </div>
 
-             updateDashboard(); // Dashboard'ı güncelle
+                    <!-- Invite Form -->
+                    <div id="team-invite-form">
+                         ${!isReadOnly ? `
+                             <form onsubmit="showToast('Daveti gönderdi.')" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                                 <h4 class="text-sm font-bold text-slate-700">${t('sendInvite')}</h4>
+                                 <div class="flex space-x-2">
+                                    <input type="email" placeholder="${t('emailPlaceholder')}" required class="flex-1 p-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50"/>
+                                    <button type="submit" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800">${t('inviteBtn')}</button>
+                                </div>
+                             </form>
+                         ` : ''}
+                    </div>
 
+                    <!-- Access List -->
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-700 mb-3">${t('accessList')}</h4>
+                        <div class="space-y-2">
+                            <!-- Self Card (Always visible) -->
+                             <div class="bg-white p-3 rounded-lg border border-slate-100 flex items-center justify-between shadow-sm">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">S</div>
+                                    <div>
+                                        <p class="text-sm font-medium text-slate-800">${t('you')}</p>
+                                        <p class="text-[10px] text-slate-500 uppercase">${t('projectManager')}</p>
+                                    </div>
+                                </div>
+                                <div class="text-[10px] font-black uppercase text-indigo-400">${t('fullAccess')}</div>
+                            </div>
+                        </div>
+
+                        <!-- Collaborators List -->
+                         ${(project.collaborators || []).map(user => `
+                             <div class="bg-white p-3 rounded-lg border border-slate-100 flex items-center justify-between shadow-sm flex-wrap gap-2">
+                                <div class="flex items-center space-x-3 flex-1 overflow-hidden pr-2">
+                                    <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-xs flex-shrink-0">${user.email.charAt(0).toUpperCase()}</div>
+                                    <div class="flex-1 truncate">
+                                        <p class="text-sm font-medium text-slate-800 truncate">${user.email}</p>
+                                        <p class="text-[10px] font-black uppercase tracking-widest mt-0.5 ${user.canEdit ? 'text-green-500' : 'text-slate-400'}">
+                                            ${user.canEdit ? t('canEdit') : t('viewerOnly')}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                     <button onclick="togglePermission('${user.id}')" ${(isReadOnly ? 'disabled' : '')} class="flex items-center text-[10px] font-bold px-2 py-1.5 rounded-lg transition-colors border ${user.canEdit ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'} ${isReadOnly ? 'opacity-50 cursor-not-allowed' : ''}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">${user.canEdit ? 'polyline points="22 12 15 7 12 12 15 17"' : 'polyline points="16 8 22 13 16 18"></polyline></svg>${t('permission')}</button>
+                                     <button onclick="showToast('${t('deleteConfirm')} fonksiyonu çalışacak')" class="text-slate-400 hover:text-red-500 p-1"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path></svg></button>
+                                </div>
+                            </div>
+                        `.join('')}
+
+                    </div>
+                </div>
+            `;
         }
 
 
-        document.getElementById('job-form-submit').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('taskName').value;
-            const assignedTo = document.getElementById('assignedTo').value;
-            const description = document.getElementById('taskDetails').value;
-
-            // Yeni görev her zaman 'todo' (yapılacak) olarak başlar
-            const newTask = {
-                id: Date.now(),
-                name: name,
-                assignedTo: assignedTo,
-                description: description,
-                status: 'todo', // Başlangıç durumu
-                createdAt: new Date().toISOString()
-            };
-
-            let tasks = getJobTasks();
-            tasks.push(newTask);
-            localStorage.setItem(STORAGE_KEYS.JOBS, JSON.stringify(tasks));
-
-            alert("✅ Görev başarıyla eklendi! Kanban panosunda görünecektir.");
-            closeModal('job-form');
-            loadJobTasks();
-        });
+        // ===============================================
+        // ✨ MAIN APP COMPONENT (Root)
+        // ===============================================
         
-        // *Simülasyon*: Bir görevi manuel olarak ilerletme (Örnek bir buton eklenmeliydi, ama basitlik için sadece yüklemede göstereceğim)
+        function App() {
+             const [activeTab, setActiveTab] = React.useState('dashboard');
+             const [selectedProject, setSelectedProject] = React.useState(null);
 
-        function editTask(task) {
-             // Bu fonksiyon gerçekte modal açıp düzenleme yapmalı. Basit olması açısından bilgilendirme yapıyorum.
-             alert(`Görev Düzenleme Modülü Açıldı: ${task.name} (ID: ${task.id})`);
-             console.log("Düzenlenecek görev verisi:", task);
-        }
+            // State management simulation (In a real app, these would be global/passed)
+            let currentProjectsState = JSON.parse(localStorage.getItem('archiMate_projects_v8')) || [];
+            let currentAuthUser = JSON.parse(localStorage.getItem('archiMate_authUser'));
+            
+             // Setup state update functions that modify the global store (simulating setStates)
 
-
-        // ---------------------------------------------
-        // 4. ÜRÜN TALEBİ MODÜLÜ
-        // ---------------------------------------------
-
-        const requestForm = document.getElementById('product-request-form');
-        requestForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const newRequest = {
-                id: Date.now(),
-                itemRequired: document.getElementById('itemRequired').value,
-                quantityNeeded: parseInt(document.getElementById('quantityNeeded').value),
-                neededByDate: document.getElementById('neededByDate').value,
-                requestingFrom: document.getElementById('requestingFrom').value,
-                notes: document.getElementById('notes').value || 'Yok',
-                status: 'Beklemede', // Varsayılan durum
-                createdAt: new Date().toISOString()
+            const handleLogin = (user) => {
+                currentAuthUser = user;
+                localStorage.setItem('archiMate_authUser', JSON.stringify(user));
+                console.log("Logged in:", user);
+                // Force re-render to show logged-in view
             };
 
-            let requests = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQUESTS)) || [];
-            requests.push(newRequest);
-            localStorage.setItem(STORAGE_KEYS.REQUESTS, JSON.stringify(requests));
+             const handleLogout = () => {
+                 currentAuthUser = null;
+                 localStorage.removeItem('archiMate_authUser');
+                 console.log("Logged out.");
+                 // Force re-render to show login screen
+            }
 
-            alert("📦 Ürün talebi başarıyla iletildi! Yönetim tarafından incelenecektir.");
-            requestForm.reset();
-            renderRequests();
-        });
+            const updateProjectState = (updatedProject) => {
+                // This simulates the setProjects function used throughout components
+                currentProjectsState = currentProjectsState.map(p => 
+                    p.id === updatedProject.id ? updatedProject : p
+                );
+                 localStorage.setItem('archiMate_projects_v8', JSON.stringify(currentProjectsState));
+            }
 
-         /** Talepleri Tabloya Yükler */
-        function renderRequests() {
-             const requests = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQUESTS)) || [];
-             const listEl = document.getElementById('request-list');
-             listEl.innerHTML = '';
-
-              if (requests.length === 0) {
-                   listEl.innerHTML = '<tr><td colspan="5" style="text-align: center;">Henüz ürün talebi yapılmamış.</td></tr>';
-                   return;
-              }
-
-
-            requests.reverse().forEach(req => { // Yeni olan yukarıda olsun
-                const row = `
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${new Date(req.createdAt).toLocaleDateString('tr-TR')}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${req.itemRequired}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${req.quantityNeeded} adet</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${req.requestingFrom}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><span style="background-color: ${getStatusColor(req.status)}; color: white; padding: 5px; border-radius: 3px; display; font-size: 0.9em;">${req.status}</span></td>
-                    </tr>
-                `;
-                listEl.innerHTML += row;
-            });
-        }
-
-        function getStatusColor(status) {
-             if (status === 'Tamamlandı') return '#28a745'; // Yeşil
-             if (status === 'İptal') return '#6c757d';    // Gri
-             return '#ffc107'; // Sarı (Beklemede)
-        }
-
-        // ---------------------------------------------
-        // 5. SEVKİYAT MODÜLÜ
-        // ---------------------------------------------
-
-        const shipmentForm = document.getElementById('shipment-form');
-        shipmentForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const movementType = document.getElementById('movementType').value;
-            const trackingId = document.getElementById('trackingId').value;
-            const itemsListInput = document.getElementById('itemsList').value;
-            const notes = document.getElementById('shipmentNotes').value;
-            const date = document.getElementById('shipmentDate').value;
-
-            // Ürün listesini parse etme: "Ürün Adı: Miktar, ... " -> [{name: "...", qty: 10}]
-            const itemsArray = itemsListInput.split(',').map(item => {
-                const parts = item.trim().split(':');
-                if (parts.length === 2) {
-                    return { name: parts[0].trim(), qty: parseInt(parts[1].trim()) };
+             const renderContent = () => {
+                if (selectedProject) {
+                    return ProjectDetail({ 
+                        project: currentProjectsState.find(p => p.id === selectedProject), 
+                        onBack: () => setSelectedProject(null), 
+                        updateProject: updateProjectState, // Pass the state updater function
+                        t: translations[localStorage.getItem('archiMate_lang') || 'tr'], 
+                        profile: { fullName: "Ahmet Mimaroğlu", profession: "Mimar", language: "tr" }, 
+                        showToast: showToast, 
+                        addNotification: (msg) => console.log('[Notification]', msg), 
+                        requestConfirm: requestConfirm 
+                    });
+                } else {
+                    switch (activeTab) {
+                        case 'dashboard': return Dashboard({ projects: currentProjectsState, t: translations[localStorage.getItem('archiMate_lang') || 'tr'] });
+                        case 'projects': return ProjectList({ projects: currentProjectsState, setProjects: (p) => { currentProjectsState = p; localStorage.setItem('archiMate_projects_v8', JSON.stringify(p)); }, onOpenProject: (id) => setSelectedProject(id), t: translations[localStorage.getItem('archiMate_lang') || 'tr'], requestConfirm: requestConfirm });
+                        case 'tools': return `
+                            <div class="p-6 h-full animate-in fade-in space-y-6 pb-24">
+                                ${Tools({ t: translations[localStorage.getItem('archiMate_lang') || 'tr'] })}
+                            </div>
+                        `;
+                        default: return Dashboard({ projects: currentProjectsState, t: translations[localStorage.getItem('archiMate_lang') || 'tr'] });
+                    }
                 }
-                return null;
-            }).filter(Boolean);
-
-             const newShipment = {
-                id: Date.now(),
-                date: date,
-                movementType: movementType,
-                trackingId: trackingId,
-                items: itemsArray,
-                notes: notes,
-                timestamp: new Date().toISOString()
             };
 
-            let shipments = JSON.parse(localStorage.getItem(STORAGE_KEYS.SHIPMENTS)) || [];
-            shipments.push(newShipment);
-            localStorage.setItem(STORAGE_KEYS.SHIPMENTS, JSON.stringify(shipments));
-
-            alert("🚚 Sevkiyat kaydı başarıyla oluşturuldu!");
-            shipmentForm.reset();
-            renderShipments();
-        });
-
-         /** Sevkiyat Tabloya Yükler */
-        function renderShipments() {
-             const shipments = JSON.parse(localStorage.getItem(STORAGE_KEYS.SHIPMENTS)) || [];
-             const listEl = document.getElementById('shipment-list');
-             listEl.innerHTML = '';
-
-              if (shipments.length === 0) {
-                   listEl.innerHTML = '<tr><td colspan="4" style="text-align: center;">Henüz sevkiyat kaydı girilmemiş.</td></tr>';
-                   return;
-              }
+             const unreadCount = (JSON.parse(localStorage.getItem('archiMate_notifications_v4')) || []).filter(n => !n.read).length;
 
 
-            shipments.reverse().forEach(s => { // Yeni olan yukarıda olsun
-                let itemsText = s.items.map(item => `${item.name}: ${item.qty}`).join(', ');
+            return `
+                <div class="flex flex-col h-screen bg-slate-50 text-slate-800 font-sans sm:max-w-md sm:mx-auto sm:border-x sm:border-slate-200 sm:shadow-2xl overflow-hidden relative">
+                    
+                    <!-- Toast Container is managed by showToast() -->
 
-                const row = `
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${s.date}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><span style="background-color: ${s.movementType === '📦 Giriş (Teslim Alma)' ? '#d4edda' : '#cce5ff'}; padding: 3px; border-radius: 3px;">${s.movementType}</span></td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${s.trackingId}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${itemsText}<br><small style="color: #666;">${s.notes}</small></td>
-                    </tr>
-                `;
-                listEl.innerHTML += row;
-            });
+                    <header class="bg-white px-6 py-4 border-b border-slate-200 shadow-sm flex items-center justify-between sticky top-0 z-10">
+                        <div>
+                            <h1 class="text-xl font-bold text-slate-900 tracking-tight">${t('appTitle')}</h1>
+                            <p class="text-xs text-slate-500">${t('appSubtitle')}</p>
+                        </div >
+                        
+                        <div class="flex items-center space-x-4">
+                            <!-- Notification Bell -->
+                            <div class="relative">
+                                <button onclick="toggleNotifications()" class="relative p-2 text-slate-400 hover:text-indigo-600 transition-colors focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 8A6 6 0 0 0 6 8c0-7-3-9-3-9h18s-3 2-3 9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                                    ${unreadCount > 0 ? '<span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white"></span>' : ''}
+                                </button>
+
+                                <!-- Notification Dropdown -->
+                                <div id="notificationDropdown" class="absolute right-0 mt-2 w-72 bg-white border border-slate-200 shadow-2xl rounded-2xl z-50 overflow-hidden transition-all duration-300 hidden animate-in fade-in zoom-in-95">
+                                    <div class="bg-slate-50 p-3 border-b border-slate-100 flex justify-between items-center">
+                                        <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">${t('notifications')}</h3>
+                                        <button onclick="toggleNotifications()" class="text-slate-400 hover:text-slate-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                                    </div>
+                                    <div class="max-h-64 overflow-y-auto p-2">
+                                        ${(JSON.parse(localStorage.getItem('archiMate_notifications_v4')) || []).length === 0 ? '<p class="text-xs text-center text-slate-400 py-4">' + t('noNotifications') + '</p>' : ''}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Profile Avatar -->
+                            <button onclick="showProfileModal()" class="w-10 h-10 rounded-full border border-indigo-200 bg-indigo-50 flex items-center justify-center overflow-hidden shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-transform hover:scale-105">
+                                ${currentAuthUser ? (localStorage.getItem('archiMate_avatar') ? `<img src="${localStorage.getItem('archiMate_avatar')}" alt="Profile" class="w-full h-full object-cover" />` : `<div class="text-indigo-600">${ProfessionVector({ profession: "Mimar", className: "w-6 h-6" })}</div>`) : ''}
+                            </button>
+                        </div>
+                    </header>
+
+                    <main id="content-area" class="flex-1 overflow-y-auto pb-24 scroll-smooth">
+                        ${renderContent()}
+                    </main>
+
+                    <!-- Bottom Navigation -->
+                    <nav class="absolute bottom-0 w-full bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20">
+                        ${NavItem({ label: t('overview'), isActive: activeTab === 'dashboard', onClick: () => setActiveTab('dashboard') })}${NavItem({ label: t('projects'), isActive: activeTab === 'projects', onClick: () => setActiveTab('projects') })}${NavItem({ label: t('tools'), isActive: activeTab === 'tools', onClick: () => setActiveTab('tools') })}${
+                    </nav>
+
+                    <!-- Profile Modal (Managed by state/global function) -->
+                     <div id="profileModalContainer"></div>
+                </div>
+            `;
         }
 
+        // ===============================================
+        // 🚀 INITIALIZATION AND BINDINGS 
+        // ===============================================
+        
+        function initializeApp() {
+            const root = document.getElementById('root');
+             // Set the current language (for consistency)
+            localStorage.setItem('archiMate_lang', 'tr');
 
-        // ---------------------------------------------
-        // 6. HATIRLATICILAR MODÜLÜ
-        // ---------------------------------------------
+            // --- Global State Setup ---
+            const setupGlobalState = () => {
+                /* Initialize local storage items for persistence simulation */
+                 if (!localStorage.getItem('archiMate_projects_v8')) {
+                    // Default project data (from initial React state)
+                     const defaultProject = {
+                        id: 1,
+                        title: "Kadıköy Merkez Ofis",
+                        client: "Ahmet Yılmaz",
+                        status: "Devam Ediyor",
+                        date: new Date().toISOString().split('T')[0],
+                        details: { address: 'Caferağa Mah. Moda Cad.', type: 'Ofis', area: '120', startDate: '2026-06-01', endDate: '2026-09-01', clientInfo: 'Ahmet Yılmaz - 555 123 4567' },
+                        techDocs: [],
+                        notes: [
+                            { id: 1, text: "Giriş lobisi için ahşap panel bakılacak.", date: "21.06.2026", authorName: "Ahmet Mimaroğlu" }
+                        ],
+                        materials: [
+                          { id: 1, type: "Zemin", name: "60x120 Mat Seramik", brand: "Vitra", area: "Lobi" }
+                        ],
+                        materialStock: [
+                          { id: 1, name: "Derz Dolgu", quantity: "5", unit: "Paket", status: "Stokta" }
+                        ],
+                        tasks: [
+                          { id: 1, title: "Belediye ruhsat başvurusu", date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "11:30", reminder: false, isDone: false }
+                        ],
+                        collaborators: [
+                          { id: 1, email: "mehmet.mimar@ofis.com", canEdit: false } 
+                        ]
+                    };
+                     localStorage.setItem('archiMate_projects_v8', JSON.stringify([defaultProject]));
+                }
 
-        const reminderForm = document.getElementById('reminder-form');
-        reminderForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const newReminder = {
-                id: Date.now(),
-                date: document.getElementById('reminderDate').value,
-                time: document.getElementById('reminderTime').value,
-                message: document.getElementById('reminderMessage').value,
-                completed: false
+                // For simplicity in this conversion, we will treat the main App component's state as the source of truth.
             };
 
-            let reminders = JSON.parse(localStorage.getItem(STORAGE_KEYS.REMINDERS)) || [];
-            reminders.push(newReminder);
-            localStorage.setItem(STORAGE_KEYS.REMINDERS, JSON.stringify(reminders));
 
-            alert("🔔 Hatırlatıcı başarıyla eklendi!");
-            reminderForm.reset();
-            renderReminders();
-        });
-
-         /** Hatırlatıcıları Tabloya Yükler */
-        function renderReminders() {
-             const reminders = JSON.parse(localStorage.getItem(STORAGE_KEYS.REMINDERS)) || [];
-             const listEl = document.getElementById('reminder-list');
-             listEl.innerHTML = '';
-
-              if (reminders.length === 0) {
-                   listEl.innerHTML = '<tr><td colspan="3" style="text-align: center;">Henüz hatırlatıcı eklenmemiş.</td></tr>';
-                   return;
-              }
-
-            // Tarih ve saat sıralaması yapılır
-             const sortedReminders = [...reminders].sort((a, b) => {
-                const dateA = new Date(`${a.date}T${a.time}:00`);
-                const dateB = new Date(`${b.date}T${b.time}:00`);
-                return dateA - dateB;
-             });
-
-
-            sortedReminders.forEach(r => {
-                 const statusIcon = r.completed ? '<span style="color: green;">✅</span>' : '<span style="color: orange;">🕒</span>';
-
-                const row = `
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${r.date}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${r.time} ${statusIcon}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${r.message}</td>
-                    </tr>
-                `;
-                listEl.innerHTML += row;
-            });
-
-             updateDashboard();
-        }
-
-        // ---------------------------------------------
-        // 7. GÜVENLİK KONTROL LİSTESİ (ENHANCEMENT)
-        // ---------------------------------------------
-
-         const safetyForm = document.getElementById('safety-checklist-form');
-        safetyForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const checklistData = {
-                id: Date.now(),
-                date: document.getElementById('checkDate').value,
-                inspectorName: document.getElementById('inspectorName').value,
-                // Checkbox değerlerini topla
-                scaffoldingCheck: document.getElementById('scaffoldingCheck').checked,
-                electricalCheck: document.getElementById('electricalCheck').checked,
-                safetyGearCheck: document.getElementById('safetyGearCheck').checked,
-                siteCleanlinessCheck: document.getElementById('siteCleanlinessCheck').checked,
-                notes: document.getElementById('safetyNotes').value
+            // --- Event Handlers Bindings (To make JSX onClick work) ---
+            window.onOpenProject = (id) => { 
+                document.querySelector('input[name="selectedProjectId"]').value = id;
+                App.setState(prev => ({...prev, selectedProject: parseInt(id)});
             };
 
-            let safetyChecks = JSON.parse(localStorage.getItem(STORAGE_KEYS.SAFETY)) || [];
-            safetyChecks.push(checklistData);
-            localStorage.setItem(STORAGE_KEYS.SAFETY, JSON.stringify(safetyChecks));
+             const App = {
+                 state: { activeTab: 'dashboard', selectedProject: null },
+                 setState: (updater) => {
+                     // Basic state update logic for the main app container
+                    if (typeof updater === 'function') {
+                        App.state = updater(App.state);
+                    } else {
+                         Object.assign(App.state, updater);
+                    }
+                    renderRoot(); // Rerender on critical state change
+                 },
+                 getState: () => App.state
+             };
 
-            alert("🛡️ Güvenlik kontrol listesi başarıyla kaydedildi!");
-            safetyForm.reset();
-            renderSafetyChecks();
-        });
+            // Expose key functions globally for inline JSX handlers
+            window.showToast = showToast;
+            window.requestConfirm = requestConfirm;
+            window.executeConfirm = executeConfirm;
+            window.closeConfirm = closeConfirm;
+            window.setActiveTab = (tab) => App.setState({...App.state, activeTab: tab});
 
-         /** Güvenlik Geçmişini Tabloya Yükler */
-        function renderSafetyChecks() {
-             const checks = JSON.parse(localStorage.getItem(STORAGE_KEYS.SAFETY)) || [];
-             const listEl = document.getElementById('safety-list');
-             listEl.innerHTML = '';
-
-              if (checks.length === 0) {
-                   listEl.innerHTML = '<tr><td colspan="3" style="text-align: center;">Henüz güvenlik kontrolü yapılmamış.</td></tr>';
-                   return;
-              }
-
-
-            checks.reverse().forEach(check => { // Yeni olan yukarıda olsun
-                const safetyNotesSummary = check.notes || "Not yok.";
-                let durumOzeti = [];
-
-                // Kontrol sonuçlarını özetle
-                if (check.scaffoldingCheck) durumOzeti.push("İskele ✅");
-                else durumOzeti.push("<span style='color:red;'>⚠️</span> İskele Eksik/Hasarlı");
-
-                if (check.electricalCheck) durumOzeti.push("Elektrik ⚡✅");
-                else durumOzeti.push("<span style='color:red;'>⚠️</span> Elektrik Sorunu");
-
-                 if (check.safetyGearCheck) durumOzeti.push("KKD ✅");
-                 else durumOzeti.push("<span style='color:red;'>⚠️</span> KKD Eksikliği");
-                
-                 if (check.siteCleanlinessCheck) durumOzeti.push("Temizlik ✨✅");
-                 else durumOzeti.push("<span style='color:red;'>❌</span> Düzenleme Gerekli");
+             // --- Render Loop ---
+             const renderRoot = () => {
+                 root.innerHTML = App(currentAuthUser); 
+             };
 
 
-                const row = `
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${check.date}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${check.inspectorName}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">
-                            ${durumOzeti.join('<br>')} <br><small style="display: block; margin-top: 5px;">* Önemli Notlar: ${safetyNotesSummary}</small>
-                        </td>
-                    </tr>
-                `;
-                listEl.innerHTML += row;
-            });
-
-             updateDashboard();
+            // Start the application rendering cycle
+            setupGlobalState();
+            renderRoot();
         }
 
-
-        // ---------------------------------------------
-        // 8. DASHBOARD GÜNCELLEMESİ (Tüm Modüllerden veri toplar)
-        // ---------------------------------------------
-        function updateDashboard() {
-            // İş Takibi verileri
-            const jobs = getJobTasks();
-            const todoCount = jobs.filter(j => j.status === 'todo').length;
-            const progressCount = jobs.filter(j => j.status === 'progress').length;
-            const doneCount = jobs.filter(j => j.status === 'done').length;
-
-            document.getElementById('dashboard-gorev-sayisi').textContent = `${todoCount} bekleyen, ${progressCount} devam eden görev var.`;
-             document.getElementById('total-gorev').textContent = jobs.length;
-             document.getElementById('done-gorev').textContent = doneCount;
-
-
-            // Ürün Talebi verileri
-            const requests = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQUESTS)) || [];
-            const pendingRequests = requests.filter(r => r.status === 'Beklemede').length;
-            document.getElementById('dashboard-talep-sayisi').textContent = `${pendingRequests} adet talep bekliyor.`;
-
-            // Sevkiyat verileri (En son girişi al)
-            const shipments = JSON.parse(localStorage.getItem(STORAGE_KEYS.SHIPMENTS)) || [];
-            let lastShipmentInfo = "Veri yok.";
-             if (shipments.length > 0) {
-                const latest = shipments[shipments.length - 1]; // En son eklenen
-                 lastShipmentInfo = `Tarih: ${latest.date} | Tip: ${latest.movementType} | No: ${latest.trackingId}`;
-             }
-            document.getElementById('dashboard-son-sevkiyat').textContent = lastShipmentInfo;
-        }
-
-
-        // ---------------------------------------------
-        // BAŞLANGIÇ FONKSİYONU
-        // ---------------------------------------------
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Tüm modülleri başlat (Verileri yükle)
-            loadProjectInfo();
-             // showSection çağrıldığı anda diğer fonksiyonlar tetiklendiği için ek çağrı yapmaya gerek yok.
-        });
-
-
+         // IIFE to encapsulate and run initialization
+         window.onload = initializeApp;
     </script>
+
 </body>
 </html>
