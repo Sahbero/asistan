@@ -1,6 +1,271 @@
-<DOCTYPE html>
-    <html>
-        <head>YARAK</head>
-        <h1>seninle geçen bir gün</h1>
-        <body style="background-color:#ff25ff;"></body>
-    </html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HANSA - İç Mimarlık</title>
+    <style>
+        /* Temizlik ve temel stiller */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Ana stiller */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Logo */
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #e74c3c;
+            text-decoration: none;
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+        }
+
+        .logo:hover {
+            transform: rotateY(180deg);
+        }
+
+        /* Gezgin Navigasyon */
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style-type: none;
+        }
+
+        nav li a {
+            padding: 25px 30px;
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* Efekt stilleri */
+        .branch-name {
+            transform-style: preserve-3d;
+            animation: branchAnimation 2s infinite alternate;
+        }
+
+        @keyframes branchAnimation {
+            from {transform: rotateY(5deg);}
+            to {transform: rotateY(-5deg);}
+        }
+
+        /* İçerik bölümleri */
+        .section {
+            padding-top: 100px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+
+        section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Animasyon stilleri */
+        .slide-in-left {
+            animation: slideInLeft 0.5s forwards;
+        }
+
+        .slide-out-right {
+            animation: slideOutRight 0.5s forwards;
+        }
+        
+        @keyframes slideInLeft {
+            from {transform: translateX(-100%); opacity: 0;}
+            to {transform: translateX(0); opacity: 1;}
+        }
+
+        @keyframes slideOutRight {
+            from {transform: translateX(0); opacity: 1;}
+            to {transform: translateX(50px); opacity: 0;}
+        }
+        
+        /* Arka plan stilleri */
+        .background-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2="0" fill='%23e74c3c'%3E%3Ccircle cx='15' cy='15' r='8'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 60px 60px;
+            position: relative;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        /* Kart stilleri */
+        .card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card::before, 
+        .card::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background-color: #e74c3c;
+            border-radius: 10px;
+            z-index: -2;
+            transition: all 0.5s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-20px) rotateX(5deg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* Footer stilleri */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .social-icons {
+            transform-style: preserve-3d;
+            animation: socialSpin 5s infinite linear;
+        }
+        
+        @keyframes socialSpin {
+            from {transform: rotateZ(0deg);}
+            to {transform: rotateZ(360deg);}
+        }
+    </style>
+</head>
+<body>
+    <header class="background-pattern">
+        <div class="container header-content">
+            <a href="#" class="logo">HANSA</a>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="activateSection('home')">Ana Sayfa</a></li>
+                    <li><a href="#" onclick="activateSection('about')">Hakkımızda</a></li>
+                    <li><a href="#" onclick="activateSection('projects')">Projelerimiz</a></li>
+                    <li><a href="#" onclick="activateSection('contact')">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Ana Sayfa -->
+    <section id="home" class="container section">
+        <h2>Modern İç Mimarlık Çözümleri</h2>
+        <p class="slide-in-left">HANSA ile yenilikçi, kullanıcı odaklı iç mimarlık çözümlerine ulaşın. Tasarımcı ekibimizle iletişime geçerek hayallerinizin realizationını yapabilirsiniz.</p>
+    </section>
+
+    <!-- Hakkımızda -->
+    <section id="about" class="container section background-pattern">
+        <h2>Kimiz Biz</h2>
+        <p class="slide-in-left">Tasarımcılığımızı 15 yılı aşkın sürede geliştirmiş, yaratıcı fikirlerimizi her zaman müşterilerin ihtiyaçlarına göre özelleştiriyoruz.</p>
+    </section>
+
+    <!-- Projeler -->
+    <section id="projects" class="container section">
+        <h2>Projelerimiz</h2>
+        <!-- Örnek kartlar -->
+    </section>
+
+    <!-- İletişim -->
+    <section id="contact" class="container section background-pattern">
+        <h2>Bize Ulaşın</h2>
+        <p class="slide-in-left">İnternet üzerinden iletişim için [email protected] adresine mail atabilirsiniz.</p>
+    </section>
+
+    <!-- 3D animasyon scriptleri -->
+    <script>
+        // Aktif bölümü değiştirme
+        function activateSection(id) {
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            event.preventDefault();
+            
+            let currentId = 'home';
+            if (id === 'about' || id === 'projects') {
+                const sections = [
+                    {id: 'about', delay: 200, animationClass: 'slideInLeft'},
+                    {id: 'projects', delay: 350, animationClass: 'slideOutRight'}
+                ];
+                
+                let sectionToActivate = sections.find(s => s.id === id);
+                if (sectionToActivate) {
+                    document.getElementById(id).classList.add('active');
+                    setTimeout(() => event.target.classList.remove(sectionToActivate.animationClass), sectionToActivate.delay);
+                }
+            }
+        }
+
+        // Sayfa yüklendiğinde animasyonları başlat
+        window.addEventListener('load', () => {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        
+                        // Animasyon efektleri
+                        setTimeout(() => {
+                            document.querySelectorAll('.card').forEach(card => card.style.opacity = '1');
+                        }, 300);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.transition = 'opacity 0.8s ease, transform 0.4s ease';
+                
+                if (section.id === 'home') observer.observe(section);
+                else setTimeout(() => observer.observe(section), 600);
+            });
+        });
+    </script>
+</body>
+</html>
