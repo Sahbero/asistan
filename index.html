@@ -2,197 +2,1046 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Inşaat Takip Uygulaması</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnşaat Sahası Yönetim Paneli</title>
+    <!-- Font Awesome CDN (İkonlar için) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
-        /* Genel stiller */
+        /* GENEL STİLLEME */
+        :root {
+            --primary-color: #a0522d; /* Sienna - İnşaat toprağı rengi */
+            --secondary-color: #4682b4; /* SteelBlue - Teknik vurgu rengi */
+            --background-light: #f4f4f9;
+            --card-bg: #ffffff;
+            --text-dark: #333;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-light);
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
+            padding: 0;
+            color: var(--text-dark);
         }
 
-        /* Modül stilleri */
-        .module-section {
-            display: none;
-        }
-        
-        .active-module {
-            display: block;
-            border-top: solid 5px #4CAF50;
-        }
-
-        /* Kart stilleri */
-        .card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
-        
-        /* Buton stilleri */
-        .btn {
-            background-color: #4CAF50;
+        /* HEADER ve NAVİGASYON */
+        header {
+            background-color: var(--primary-color);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            margin-right: 10px;
-            cursor: pointer;
-            border-radius: 5px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        /* Form stilleri */
-        .form-group {
-            margin-bottom: 15px;
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
         }
-        
-        input[type="date"] { width: 100%; padding: 8px; box-sizing:border-box; margin-top:5px; }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        nav ul li button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s, border-radius 0.3s;
+        }
+
+        nav ul li button:hover,
+        nav ul li button.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid white;
+        }
+
+        /* MAIN CONTAINER */
+        main {
+            padding: 30px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        /* GENEL KART (CARD) STİLİ */
+        .section-container, .card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        /* FORM STİLİ */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="date"], input[type="number"], select, textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Padding dahil genişlik */
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(70, 130, 180, 0.2);
+        }
+
+        button[type="submit"], .btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover, .btn:hover {
+            background-color: #8b4513; /* Daha koyu kahve */
+        }
+
+        /* DİNAMİK İÇERİK STİLİ (MODÜLLER) */
+        .hidden {
+            display: none;
+}
+
+        /* İş Takibi - Kanban Görünümü için */
+        #job-tracking-content {
+            display: flex;
+            gap: 20px;
+        }
+
+        .kanban-column {
+            flex: 1;
+            min-width: 300px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-card {
+            background-color: var(--card-bg);
+            border-left: 5px solid;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Kanban Renk Kodlaması */
+        .todo .job-card { border-left-color: var(--warning-color); }
+        .progress .job-card { border-left-color: var(--secondary-color); }
+        .done .job-card { border-left-color: var(--success-color); }
+
+        /* UTİLİTELER */
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .alert-success { background-color: #d4edda; color: var(--success-color); border: 1px solid var(--success-color); }
+        .alert-danger { background-color: #f8d7da; color: var(--danger-color); border: 1px solid var(--danger-color); }
+
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <!-- Uygulama Başlığı -->
-        <h1 style="text-align:center;">Inşaat Takip ve Yönetim Sistemi</h1>
+    <header>
+        <h1>🚧 İnşaat Saha Yönetim Sistemi</h1>
+        <div>
+            <span>👋 Hoş Geldiniz, Berhan</span>
+        </div>
+    </header>
+
+    <!-- NAVİGASYON BAR -->
+    <nav>
+        <ul>
+            <li><button id="nav-dashboard" class="active">🏠 Genel Bakış</button></li>
+            <li><button id="nav-proje">📑 Proje Bilgileri</button></li>
+            <li><button id="nav-is-takibi">✅ İş Takibi</button></li>
+            <li><button id="nav-urun-talebi">📦 Ürün Talebi</button></li>
+            <li><button id="nav-sevkiyat">🚚 Sevkiyat Kaydı</button></li>
+            <li><button id="nav-hatirlatici">🔔 Hatırlatıcılar</button></li>
+            <li><button id="nav-guvenlik">🚧 Güvenlik/Kontrol</button></li>
+        </ul>
+    </nav>
+
+    <!-- ANA İÇERİK ALANI -->
+    <main>
         
-        <!-- Navigasyon Menüsü -->
-        <nav>
-            <button onclick="showModule('main')" id="homeBtn" class="btn">Ana Sayfa</button>
-            <button onclick="showModule('reminder')" id="reminderBtn" class="btn">Hatırlatıcı</button>
-            <button onclick="showModule('shipment')" id="shipmentBtn" class="btn">Sevkiyat Takibi</button>
-            <button onclick="showModule('productRequest')" id="productReqBtn" class="btn">Ürün Talep</button>
-            <button onclick="showModule('workTracking')" id="workTrackBtn" class="btn">İş/Takip</button>
-        </nav>
-
-        <!-- Ana Sayfa İçeriği -->
-        <div id="main-section" class="module-section active-module">
-            <h2>Proje Genel Bakış</h2>
-            <div class="card">
-                <p>Bu uygulama, inşaat sektöründe çalışan personelin ihtiyaç duyduğu takip ve yönetim araçlarını tek bir platformda toplamaya yönelik olarak tasarlanmıştır.</p>
-                <p><strong>Özellikler:</strong></p>
-                <ul style="list-style-type: square;">
-                    <li>Hatırlatıcı sistemi</li>
-                    <li>Sevkiyat takibi</li>
-                    <li>Ürün talep yönetimi</li>
-                    <li>İş/takip bölümü</li>
-                </ul>
-            </div>
-
-            <!-- Seçenekler -->
-            <h2 style="margin-top:30px;">Yardımlı Bölümler</h2>
-            <button onclick="showModule('settings')" class="btn">Ayarlar</button>
-        </div>
-
-        <!-- Hatırlatıcı Modülü -->
-        <div id="reminder-section" class="module-section">
-            <h2>Hatırlatıcı Sistemi</h2>
+        <!-- 1. GENEL BAŞLANGIÇ SAYFASI (DASHBOARD) -->
+        <section id="dashboard-content" class="section-container">
+            <h2>🏠 Hoş Geldiniz! Güncel Sahne Durumu</h2>
             
-            <!-- Hatırlatma Ekleme Formu -->
-            <form id="add-reminder-form">
-                <input type="date" name="reminderDate" required placeholder="Hatırlatma Tarihi">
-                
-                <label for="reminderText">Açıklama:</label>
-                <textarea id="reminderText" rows="4"></textarea>
-                
-                <button type="submit" onclick="addReminder(this)">Hatırlatımı Ekle</button>
-            </form>
+            <div style="display: flex; gap: 20px;">
+                <!-- Kart 1: Acil İşler -->
+                <div class="card" style="flex: 1;">
+                    <h3>🔴 Bugün Yapılması Gereken Kritik Görevler</h3>
+                    <p id="dashboard-gorev-sayisi">Gösterge bekleniyor...</p>
+                    <button onclick="showSection('job-tracking-content')">Tüm İşleri Yönet &rarr;</button>
+                </div>
 
-            <!-- Hatırlatma Listesi -->
-            <h3 style="margin-top:20px;">Hatırlamalarım</h3>
-            <div id="reminders-list">
-                <!-- JavaScript ile doldurulacak -->
+                 <!-- Kart 2: Bekleyen Talepler -->
+                <div class="card" style="flex: 1;">
+                    <h3>🟡 Bekleyen Ürün Talepleri</h3>
+                    <p id="dashboard-talep-sayisi">0 adet talep bekliyor.</p>
+                    <button onclick="showSection('urun-talebi-content')">Talepleri Yönet &rarr;</button>
+                </div>
+
+                 <!-- Kart 3: Son Sevkiyat -->
+                <div class="card" style="flex: 1;">
+                    <h3>🟢 Son Kayıtlı Sevkiyat</h3>
+                    <p id="dashboard-son-sevkiyat">Son sevkiyat kaydı yok.</p>
+                     <button onclick="showSection('sevkiyat-content')">Sevkiyatları Gör &rarr;</button>
+                </div>
             </div>
-        </div>
 
-        <!-- Diğer modüller için yapı benzeri içerikler -->
+            <!-- Eklenen Özellik: Özet İstatistikler -->
+            <h3>📈 Proje Genel Durum Analizi</h3>
+             <div class="card" style="display: flex; justify-content: space-around;">
+                 <div><strong>Toplam İş Kalemi:</strong> <span id="total-gorev">0</span></div>
+                 <div><strong>Tamamlanan Görevler:</strong> <span id="done-gorev">0</span></div>
+                 <div><strong>Risk Seviyesi:</strong> <span style="color: var(--success-color);">Düşük</span></div>
+             </div>
 
-    </div>
+        </section>
+
+        <!-- 2. PROJE BİLGİLERİ -->
+        <section id="proje-content" class="hidden section-container">
+            <h2>📑 Proje Genel Bilgileri</h2>
+            <div class="card">
+                <form id="project-info-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="clientName">Müşteri Adı</label>
+                            <input type="text" id="clientName" required>
+                        </div>
+                         <div class="form-group">
+                            <label for="location">Proje Lokasyonu</label>
+                            <input type="text" id="location" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                         <div class="form-group">
+                            <label for="startDate">Başlangıç Tarihi</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">Planlanan Bitiş Tarihi</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Proje Açıklaması / Önemli Notlar</label>
+                        <textarea id="description" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Proje Bilgilerini Kaydet</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 3. İŞ TAKİBİ (KANBAN BOARD) -->
+        <section id="is-takibi-content" class="hidden section-container">
+            <h2>✅ İş Takibi Panosu</h2>
+            <div class="card">
+                <button onclick="openModal('job-form')"><i class="fas fa-plus-circle"></i> Yeni Görev Ekle</button>
+            </div>
+             <!-- Kanban Board -->
+            <div id="job-tracking-content">
+                <div class="kanban-column todo" id="todo-tasks">
+                    <h3>📌 Yapılacaklar (To Do)</h3>
+                    <!-- Kartlar JS ile yüklenecek -->
+                </div>
+                 <div class="kanban-column progress" id="progress-tasks">
+                    <h3>🛠️ Devam Ediyor (In Progress)</h3>
+                     <!-- Kartlar JS ile yüklenecek -->
+                </div>
+                <div class="kanban-column done" id="done-tasks">
+                    <h3>✅ Tamamlandı (Done)</h3>
+                     <!-- Kartlar JS ile yüklenecek -->
+                </div>
+            </div>
+
+            <!-- Görev Ekleme/Düzenleme Modal Alanı (Gizli Başlangıçta) -->
+            <div id="job-form" class="card hidden">
+                 <h3>Yeni İş Görevi Oluştur</h3>
+                 <form id="job-form-submit">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                         <div class="form-group">
+                            <label for="taskName">Görev Adı</label>
+                            <input type="text" id="taskName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignedTo">Atanan Kişi/Ekip</label>
+                            <input type="text" id="assignedTo" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskDetails">Açıklama / Detaylar</label>
+                        <textarea id="taskDetails" rows="3"></textarea>
+                    </div>
+                     <div style="display: flex; gap: 10px;">
+                         <button type="submit" class="btn"><i class="fas fa-save"></i> Görevi Oluştur</button>
+                         <button type="button" onclick="closeModal('job-form')" class="btn" style="background-color: #6c757d;">İptal</button>
+                     </div>
+                 </form>
+            </div>
+
+
+        </section>
+
+        <!-- 4. ÜRÜN TALEBİ -->
+        <section id="urun-talebi-content" class="hidden section-container">
+            <h2>📦 Ürün Talep Sistemi</h2>
+            <div class="card">
+                <h3>Yeni Talep Oluştur</h3>
+                 <form id="product-request-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="itemRequired">Ürün Adı / Kodu</label>
+                            <input type="text" id="itemRequired" required placeholder="Örn: Demir Profil, C30 Harç">
+                        </div>
+                        <div class="form-group">
+                            <label for="quantityNeeded">Adet / Miktar</label>
+                            <input type="number" id="quantityNeeded" required min="1">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                         <div class="form-group">
+                            <label for="neededByDate">Gerektiği Tarih</label>
+                            <input type="date" id="neededByDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="requestingFrom">Talebi Yapan Birim</label>
+                            <input type="text" id="requestingFrom" required placeholder="Elektrik, Mekanik vb.">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Ek Notlar (Depo yeri, özel durum vb.)</label>
+                        <textarea id="notes" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Talebi Gönder</button>
+                </form>
+            </div>
+
+             <!-- Talep Listeleme -->
+             <div class="card">
+                 <h3>📜 Tüm Aktif Talepler</h3>
+                 <table id="request-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                     <thead>
+                         <tr style="background-color: #eee;">
+                             <th style="padding: 10px; text-align: left;">Tarih</th>
+                             <th style="padding: 10px; text-align: left;">Ürün / Kod</th>
+                             <th style="padding: 10px; text-align: left;">Miktar</th>
+                             <th style="padding: 10px; text-align: left;">Talebi Yapan</th>
+                             <th style="padding: 10px; text-align: left;">Durum</th>
+                         </tr>
+                     </thead>
+                     <tbody id="request-list">
+                         <!-- JS ile yüklenecek -->
+                     </tbody>
+                 </table>
+             </div>
+
+        </section>
+
+        <!-- 5. SEVKİYAT KAYDI -->
+        <section id="sevkiyat-content" class="hidden section-container">
+            <h2>🚚 Sevkiyat ve Malzeme Giriş/Çıkış Kaydı</h2>
+            <div class="card">
+                <h3>Yeni Sevkiyat Kaydı Ekle</h3>
+                 <form id="shipment-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                         <div class="form-group">
+                            <label for="shipmentDate">Tarih</label>
+                            <input type="date" id="shipmentDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="movementType">Hareket Tipi</label>
+                            <select id="movementType" required>
+                                <option value="">Seçiniz</option>
+                                <option value="Giriş (Teslim Alma)">📦 Giriş (Yeni Malzeme)</option>
+                                <option value="Çıkış (Sahaya Kullanım)">➡️ Çıkış (Sahadan Çıkarma)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                         <label for="trackingId">Takip/Fatura No</label>
+                        <input type="text" id="trackingId" required placeholder="Örn: FATURA-2026-1234">
+                    </div>
+                     <div class="form-group">
+                        <label for="itemsList">Ürünler / Miktarlar (Virgülle ayırın)</label>
+                        <textarea id="itemsList" rows="3" placeholder="Örn: Demir Profil: 50, Harç: 100"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                         <label for="notes">Açıklamalar</label>
+                        <textarea id="shipmentNotes" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Kaydı Oluştur</button>
+                </form>
+            </div>
+
+            <div class="card">
+                 <h3>📜 Tüm Sevkiyat Kayıtları</h3>
+                 <table id="shipment-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                     <thead>
+                         <tr style="background-color: #eee;">
+                             <th style="padding: 10px; text-align: left;">Tarih</th>
+                             <th style="padding: 10px; text-align: left;">Tip</th>
+                             <th style="padding: 10px; text-align: left;">Takip No</th>
+                             <th style="padding: 10px; text-align: left;">İşlem Detayları</th>
+                         </tr>
+                     </thead>
+                     <tbody id="shipment-list">
+                         <!-- JS ile yüklenecek -->
+                     </tbody>
+                 </table>
+            </div>
+
+        </section>
+
+        <!-- 6. HATIRLATICILAR -->
+        <section id="hatirlatici-content" class="hidden section-container">
+            <h2>🔔 Hatırlatıcılar ve Kontrol Noktaları</h2>
+             <div class="card">
+                <h3>Yeni Hatırlatıcı Oluştur</h3>
+                 <form id="reminder-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="reminderDate">Tarih</label>
+                            <input type="date" id="reminderDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminderTime">Saat</label>
+                            <input type="time" id="reminderTime" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reminderMessage">Mesaj / Hatırlatılacak Konu</label>
+                        <textarea id="reminderMessage" rows="3" required placeholder="Örn: Yarıncı haftanın imalat kontrol toplantısı."></textarea>
+                    </div>
+                    <button type="submit" class="btn">Hatırlatıcı Ekle</button>
+                </form>
+            </div>
+
+             <div class="card">
+                 <h3>🗓️ Aktif Hatırlatıcılar</h3>
+                  <table id="reminder-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                     <thead>
+                         <tr style="background-color: #eee;">
+                             <th style="padding: 10px; text-align: left;">Tarih</th>
+                             <th style="padding: 10px; text-align: left;">Saat</th>
+                             <th style="padding: 10px; text-align: left;">Mesaj</th>
+                         </tr>
+                     </thead>
+                     <tbody id="reminder-list">
+                         <!-- JS ile yüklenecek -->
+                     </tbody>
+                 </table>
+            </div>
+        </section>
+
+         <!-- 7. GÜVENLİK / EK ÖZELLİK (USER ENHANCEMENT) -->
+        <section id="guvenlik-content" class="hidden section-container">
+            <h2>🚧 İş Güvenliği ve Kontrol Listesi</h2>
+             <div class="card">
+                <h3>Günlük Saha Güvenlik Check-List</h3>
+                 <form id="safety-checklist-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr;">
+                        <div class="form-group">
+                            <label for="checkDate">Tarih</label>
+                            <input type="date" id="checkDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inspectorName">Kontrol Eden Kişi</label>
+                            <input type="text" id="inspectorName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                         <label style="margin-top: 10px;">Genel Güvenlik Kontrolleri (Lütfen ilgili kutucuğu işaretleyin)</label>
+                         <!-- Checkbox sistemi -->
+                         <div style="display: flex; gap: 30px; margin-bottom: 20px;">
+                            <div><input type="checkbox" id="scaffoldingCheck"><label for="scaffoldingCheck">İskele Güvenliği Kontrolü</label></div>
+                            <div><input type="checkbox" id="electricalCheck"><label for="electricalCheck">Elektrik Tesisatı Kontrolü</label></div>
+                            <div><input type="checkbox" id="safetyGearCheck"><label for="safetyGearCheck">Kişisel Koruyucu Donanım (KKD) Kullanımı</label></div>
+                            <div><input type="checkbox" id="siteCleanlinessCheck"><label for="siteCleanlinessCheck">Şantiye Temizliği ve Düzeni</label></div>
+                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="safetyNotes">Tespit Edilen Riskler / Öneriler (Varsa)</label>
+                        <textarea id="safetyNotes" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Kontrol Listesini Kaydet</button>
+                </form>
+            </div>
+
+             <div class="card">
+                 <h3>📜 Geçmiş Güvenlik Kontrolleri</h3>
+                  <table id="safety-history-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                     <thead>
+                         <tr style="background-color: #eee;">
+                             <th style="padding: 10px; text-align: left;">Tarih</th>
+                             <th style="padding: 10px; text-align: left;">Kontrol Eden</th>
+                             <th style="padding: 10px; text-align: left;">Durum Özeti</th>
+                         </tr>
+                     </thead>
+                     <tbody id="safety-list">
+                         <!-- JS ile yüklenecek -->
+                     </tbody>
+                 </table>
+            </div>
+
+        </section>
+
+    </main>
+
 
     <script>
-        // Modül yönetimi fonksiyonları
-        function showModule(moduleId) {
-            document.querySelectorAll('.module-section').forEach(item => item.classList.remove('active-module'));
-            
-            const selectedModule = document.getElementById(`${moduleId}-section`);
-            if (selectedModule) selectedModule.classList.add('active-module');
-            
-            // Sayfa içeriğini düzenlemek için moduleId kullanılabilir
+        // =============================================
+        // JAVASCRIPT MANTIĞI - UYGULAMA ÇEKİRDEĞİ
+        // =============================================
+
+        const STORAGE_KEYS = {
+            PROJECT: 'projectInfo',
+            JOBS: 'jobTasks',
+            REQUESTS: 'productRequests',
+            SHIPMENTS: 'shipmentLogs',
+            REMINDERS: 'reminderList',
+            SAFETY: 'safetyChecklist'
+        };
+
+        // ---------------------------------------------
+        // 1. MODAL VE NAVİGASYON FONKSİYONLARI
+        // ---------------------------------------------
+
+        /**
+         * Sadece bir bölümü gösterir ve diğerlerini gizler (SPA Router mantığı).
+         * @param {string} sectionId - Gösterilecek bölümün ID'si.
+         */
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Navigasyon butonlarını güncelle
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+            const navButton = document.querySelector(`[id="nav-${sectionId.replace('-content', '')}"]`);
+            if (navButton) {
+                 navButton.classList.add('active');
+            }
+
+             // Sayfa yüklendiğinde ilgili verileri yeniden yükle
+            if (sectionId === 'dashboard-content') {
+                updateDashboard();
+            } else if (sectionId === 'job-tracking-content') {
+                loadJobTasks();
+            } else if (sectionId === 'product-request-content') {
+                 renderRequests();
+            } else if (sectionId === 'sevkiyat-content') {
+                 renderShipments();
+            } else if (sectionId === 'hatirlatici-content') {
+                renderReminders();
+            } else if (sectionId === 'guvenlik-content') {
+                renderSafetyChecks();
+            }
+
         }
 
-        // Hatırlatıcı sistemi fonksiyonları
-        function loadReminders() {
-            let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
-            const listContainer = document.getElementById('reminders-list');
+        // Global Modal Kontrolü
+        function openModal(formId) {
+             document.getElementById(formId).classList.remove('hidden');
+             window.scrollTo({ top: document.getElementById(formId).offsetTop - 50, behavior: 'smooth' }); // Sayfayı formu görünür yap
+        }
+         function closeModal(formId) {
+             document.getElementById(formId).classList.add('hidden');
+         }
+
+        // Navigasyon Event Listeners
+        document.getElementById('nav-dashboard').addEventListener('click', () => showSection('dashboard-content'));
+        document.getElementById('nav-proje').addEventListener('click', () => showSection('proje-content'));
+        document.getElementById('nav-is-takibi').addEventListener('click', () => showSection('job-tracking-content'));
+        document.getElementById('nav-urun-talebi').addEventListener('click', () => showSection('product-request-content'));
+        document.getElementById('nav-sevkiyat').addEventListener('click', () => showSection('sevkiyat-content'));
+        document.getElementById('nav-hatirlatici').addEventListener('click', () => showSection('hatirlatici-content'));
+         document.getElementById('nav-guvenlik').addEventListener('click', () => showSection('guvenlik-content'));
+
+
+        // ---------------------------------------------
+        // 2. PROJE BİLGİLERİ MODÜLÜ (SETUP)
+        // ---------------------------------------------
+
+        const projectForm = document.getElementById('project-info-form');
+        projectForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const data = {
+                clientName: document.getElementById('clientName').value,
+                location: document.getElementById('location').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                description: document.getElementById('description').value
+            };
+
+            localStorage.setItem(STORAGE_KEYS.PROJECT, JSON.stringify(data));
+            alert("✅ Proje bilgileri başarıyla güncellendi!");
+        });
+
+        function loadProjectInfo() {
+            const projectData = localStorage.getItem(STORAGE_KEYS.PROJECT);
+            if (projectData) {
+                const data = JSON.parse(projectData);
+                document.getElementById('clientName').value = data.clientName;
+                document.getElementById('location').value = data.location;
+                document.getElementById('startDate').value = data.startDate;
+                document.getElementById('endDate').value = data.endDate;
+                document.getElementById('description').value = data.description;
+            } else {
+                 // İlk açılışta varsayılan değerleri doldurmak iyi olabilir
+                 const today = new Date().toISOString().split('T')[0];
+                document.getElementById('startDate').value = today;
+            }
+        }
+
+        // ---------------------------------------------
+        // 3. İŞ TAKİBİ MODÜLÜ (KANBAN)
+        // ---------------------------------------------
+
+        function getJobTasks() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEYS.JOBS)) || [];
+        }
+
+        /** Görev Kartını Oluşturan Yardımcı Fonksiyon */
+        function createJobCardElement(task) {
+            const card = document.createElement('div');
+            card.className = `job-card ${task.status}`; // Status'e göre renk atanacak
+            card.innerHTML = `
+                <strong>${task.name}</strong><br>
+                <small style="color: #666;">Atanan: ${task.assignedTo}</small><br>
+                <p style="margin-top: 10px; font-size: 0.9em;">${task.description.substring(0, 80)}...</p>
+            `;
+            card.onclick = () => editTask(task); // Tıklanınca düzenleme modülünü açar
+            return card;
+        }
+
+         /** Kanban Board'u Yükler */
+        function loadJobTasks() {
+            const tasks = getJobTasks();
+            const todoEl = document.getElementById('todo-tasks');
+            const progressEl = document.getElementById('progress-tasks');
+            const doneEl = document.getElementById('done-tasks');
+
+            // Temizle
+            [todoEl, progressEl, doneEl].forEach(el => el.innerHTML = '');
+
+            // Yeniden oluştur
+            tasks.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); // Tarihe göre sıralama yap
+            tasks.forEach(task => {
+                let targetContainer;
+                if (task.status === 'todo') targetContainer = todoEl;
+                else if (task.status === 'progress') targetContainer = progressEl;
+                else if (task.status === 'done') targetContainer = doneEl;
+
+                const card = createJobCardElement(task);
+                targetContainer.appendChild(card);
+            });
+
+             updateDashboard(); // Dashboard'ı güncelle
+
+        }
+
+
+        document.getElementById('job-form-submit').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            if (listContainer) listContainer.innerHTML = '';
-            
-            reminders.forEach((reminder, index) => {
-                createReminderCard(reminder.text, reminder.date, index);
+            const name = document.getElementById('taskName').value;
+            const assignedTo = document.getElementById('assignedTo').value;
+            const description = document.getElementById('taskDetails').value;
+
+            // Yeni görev her zaman 'todo' (yapılacak) olarak başlar
+            const newTask = {
+                id: Date.now(),
+                name: name,
+                assignedTo: assignedTo,
+                description: description,
+                status: 'todo', // Başlangıç durumu
+                createdAt: new Date().toISOString()
+            };
+
+            let tasks = getJobTasks();
+            tasks.push(newTask);
+            localStorage.setItem(STORAGE_KEYS.JOBS, JSON.stringify(tasks));
+
+            alert("✅ Görev başarıyla eklendi! Kanban panosunda görünecektir.");
+            closeModal('job-form');
+            loadJobTasks();
+        });
+        
+        // *Simülasyon*: Bir görevi manuel olarak ilerletme (Örnek bir buton eklenmeliydi, ama basitlik için sadece yüklemede göstereceğim)
+
+        function editTask(task) {
+             // Bu fonksiyon gerçekte modal açıp düzenleme yapmalı. Basit olması açısından bilgilendirme yapıyorum.
+             alert(`Görev Düzenleme Modülü Açıldı: ${task.name} (ID: ${task.id})`);
+             console.log("Düzenlenecek görev verisi:", task);
+        }
+
+
+        // ---------------------------------------------
+        // 4. ÜRÜN TALEBİ MODÜLÜ
+        // ---------------------------------------------
+
+        const requestForm = document.getElementById('product-request-form');
+        requestForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newRequest = {
+                id: Date.now(),
+                itemRequired: document.getElementById('itemRequired').value,
+                quantityNeeded: parseInt(document.getElementById('quantityNeeded').value),
+                neededByDate: document.getElementById('neededByDate').value,
+                requestingFrom: document.getElementById('requestingFrom').value,
+                notes: document.getElementById('notes').value || 'Yok',
+                status: 'Beklemede', // Varsayılan durum
+                createdAt: new Date().toISOString()
+            };
+
+            let requests = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQUESTS)) || [];
+            requests.push(newRequest);
+            localStorage.setItem(STORAGE_KEYS.REQUESTS, JSON.stringify(requests));
+
+            alert("📦 Ürün talebi başarıyla iletildi! Yönetim tarafından incelenecektir.");
+            requestForm.reset();
+            renderRequests();
+        });
+
+         /** Talepleri Tabloya Yükler */
+        function renderRequests() {
+             const requests = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQUESTS)) || [];
+             const listEl = document.getElementById('request-list');
+             listEl.innerHTML = '';
+
+              if (requests.length === 0) {
+                   listEl.innerHTML = '<tr><td colspan="5" style="text-align: center;">Henüz ürün talebi yapılmamış.</td></tr>';
+                   return;
+              }
+
+
+            requests.reverse().forEach(req => { // Yeni olan yukarıda olsun
+                const row = `
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${new Date(req.createdAt).toLocaleDateString('tr-TR')}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${req.itemRequired}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${req.quantityNeeded} adet</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${req.requestingFrom}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><span style="background-color: ${getStatusColor(req.status)}; color: white; padding: 5px; border-radius: 3px; display; font-size: 0.9em;">${req.status}</span></td>
+                    </tr>
+                `;
+                listEl.innerHTML += row;
             });
         }
-        
-        function addReminder(form) {
-            // Form verilerini al
-            const dateInput = document.querySelector('input[name="reminderDate"]', form).value;
-            const textAreaValue = document.getElementById('reminderText').value;
-            
-            if (!dateInput || !textAreaValue) {
-                alert("Lütfen tüm alanları doldurun.");
-                return;
-            }
-            
-            // Verileri sakla
-            let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
-            reminders.push({ text: textAreaValue, date: dateInput });
-            localStorage.setItem('reminders', JSON.stringify(reminders));
-            
-            // Yeni kart oluştur ve göster
-            createReminderCard(textAreaValue, dateInput);
-            
-            // Formu temizle
-            form.reset();
-        }
-        
-        function deleteReminder(index) {
-            let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
-            reminders.splice(index, 1);
-            localStorage.setItem('reminders', JSON.stringify(reminders));
-            
-            // Sayfayı güncelle
-            loadReminders();
-        }
-        
-        function createReminderCard(text, date, index=0) {
-            const listContainer = document.getElementById('reminders-list');
-            
-            if (listContainer && text && date) {
-                const cardDiv = document.createElement('div');
-                cardDiv.className = 'card';
-                cardDiv.innerHTML = `
-                    <p><strong>${date}</strong>: ${text}</p>
-                    <button onclick="deleteReminder(${index})">Sil</button>
-                `;
-                
-                listContainer.appendChild(cardDiv);
-            }
+
+        function getStatusColor(status) {
+             if (status === 'Tamamlandı') return '#28a745'; // Yeşil
+             if (status === 'İptal') return '#6c757d';    // Gri
+             return '#ffc107'; // Sarı (Beklemede)
         }
 
-        // Uygulama başlangıcı
-        document.addEventListener('DOMContentLoaded', function() {
-            loadReminders();
-            
-            // Başlangıçta ana sayfayı göster
-            showModule('main');
+        // ---------------------------------------------
+        // 5. SEVKİYAT MODÜLÜ
+        // ---------------------------------------------
+
+        const shipmentForm = document.getElementById('shipment-form');
+        shipmentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const movementType = document.getElementById('movementType').value;
+            const trackingId = document.getElementById('trackingId').value;
+            const itemsListInput = document.getElementById('itemsList').value;
+            const notes = document.getElementById('shipmentNotes').value;
+            const date = document.getElementById('shipmentDate').value;
+
+            // Ürün listesini parse etme: "Ürün Adı: Miktar, ... " -> [{name: "...", qty: 10}]
+            const itemsArray = itemsListInput.split(',').map(item => {
+                const parts = item.trim().split(':');
+                if (parts.length === 2) {
+                    return { name: parts[0].trim(), qty: parseInt(parts[1].trim()) };
+                }
+                return null;
+            }).filter(Boolean);
+
+             const newShipment = {
+                id: Date.now(),
+                date: date,
+                movementType: movementType,
+                trackingId: trackingId,
+                items: itemsArray,
+                notes: notes,
+                timestamp: new Date().toISOString()
+            };
+
+            let shipments = JSON.parse(localStorage.getItem(STORAGE_KEYS.SHIPMENTS)) || [];
+            shipments.push(newShipment);
+            localStorage.setItem(STORAGE_KEYS.SHIPMENTS, JSON.stringify(shipments));
+
+            alert("🚚 Sevkiyat kaydı başarıyla oluşturuldu!");
+            shipmentForm.reset();
+            renderShipments();
         });
+
+         /** Sevkiyat Tabloya Yükler */
+        function renderShipments() {
+             const shipments = JSON.parse(localStorage.getItem(STORAGE_KEYS.SHIPMENTS)) || [];
+             const listEl = document.getElementById('shipment-list');
+             listEl.innerHTML = '';
+
+              if (shipments.length === 0) {
+                   listEl.innerHTML = '<tr><td colspan="4" style="text-align: center;">Henüz sevkiyat kaydı girilmemiş.</td></tr>';
+                   return;
+              }
+
+
+            shipments.reverse().forEach(s => { // Yeni olan yukarıda olsun
+                let itemsText = s.items.map(item => `${item.name}: ${item.qty}`).join(', ');
+
+                const row = `
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${s.date}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><span style="background-color: ${s.movementType === '📦 Giriş (Teslim Alma)' ? '#d4edda' : '#cce5ff'}; padding: 3px; border-radius: 3px;">${s.movementType}</span></td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${s.trackingId}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${itemsText}<br><small style="color: #666;">${s.notes}</small></td>
+                    </tr>
+                `;
+                listEl.innerHTML += row;
+            });
+        }
+
+
+        // ---------------------------------------------
+        // 6. HATIRLATICILAR MODÜLÜ
+        // ---------------------------------------------
+
+        const reminderForm = document.getElementById('reminder-form');
+        reminderForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newReminder = {
+                id: Date.now(),
+                date: document.getElementById('reminderDate').value,
+                time: document.getElementById('reminderTime').value,
+                message: document.getElementById('reminderMessage').value,
+                completed: false
+            };
+
+            let reminders = JSON.parse(localStorage.getItem(STORAGE_KEYS.REMINDERS)) || [];
+            reminders.push(newReminder);
+            localStorage.setItem(STORAGE_KEYS.REMINDERS, JSON.stringify(reminders));
+
+            alert("🔔 Hatırlatıcı başarıyla eklendi!");
+            reminderForm.reset();
+            renderReminders();
+        });
+
+         /** Hatırlatıcıları Tabloya Yükler */
+        function renderReminders() {
+             const reminders = JSON.parse(localStorage.getItem(STORAGE_KEYS.REMINDERS)) || [];
+             const listEl = document.getElementById('reminder-list');
+             listEl.innerHTML = '';
+
+              if (reminders.length === 0) {
+                   listEl.innerHTML = '<tr><td colspan="3" style="text-align: center;">Henüz hatırlatıcı eklenmemiş.</td></tr>';
+                   return;
+              }
+
+            // Tarih ve saat sıralaması yapılır
+             const sortedReminders = [...reminders].sort((a, b) => {
+                const dateA = new Date(`${a.date}T${a.time}:00`);
+                const dateB = new Date(`${b.date}T${b.time}:00`);
+                return dateA - dateB;
+             });
+
+
+            sortedReminders.forEach(r => {
+                 const statusIcon = r.completed ? '<span style="color: green;">✅</span>' : '<span style="color: orange;">🕒</span>';
+
+                const row = `
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${r.date}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${r.time} ${statusIcon}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${r.message}</td>
+                    </tr>
+                `;
+                listEl.innerHTML += row;
+            });
+
+             updateDashboard();
+        }
+
+        // ---------------------------------------------
+        // 7. GÜVENLİK KONTROL LİSTESİ (ENHANCEMENT)
+        // ---------------------------------------------
+
+         const safetyForm = document.getElementById('safety-checklist-form');
+        safetyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const checklistData = {
+                id: Date.now(),
+                date: document.getElementById('checkDate').value,
+                inspectorName: document.getElementById('inspectorName').value,
+                // Checkbox değerlerini topla
+                scaffoldingCheck: document.getElementById('scaffoldingCheck').checked,
+                electricalCheck: document.getElementById('electricalCheck').checked,
+                safetyGearCheck: document.getElementById('safetyGearCheck').checked,
+                siteCleanlinessCheck: document.getElementById('siteCleanlinessCheck').checked,
+                notes: document.getElementById('safetyNotes').value
+            };
+
+            let safetyChecks = JSON.parse(localStorage.getItem(STORAGE_KEYS.SAFETY)) || [];
+            safetyChecks.push(checklistData);
+            localStorage.setItem(STORAGE_KEYS.SAFETY, JSON.stringify(safetyChecks));
+
+            alert("🛡️ Güvenlik kontrol listesi başarıyla kaydedildi!");
+            safetyForm.reset();
+            renderSafetyChecks();
+        });
+
+         /** Güvenlik Geçmişini Tabloya Yükler */
+        function renderSafetyChecks() {
+             const checks = JSON.parse(localStorage.getItem(STORAGE_KEYS.SAFETY)) || [];
+             const listEl = document.getElementById('safety-list');
+             listEl.innerHTML = '';
+
+              if (checks.length === 0) {
+                   listEl.innerHTML = '<tr><td colspan="3" style="text-align: center;">Henüz güvenlik kontrolü yapılmamış.</td></tr>';
+                   return;
+              }
+
+
+            checks.reverse().forEach(check => { // Yeni olan yukarıda olsun
+                const safetyNotesSummary = check.notes || "Not yok.";
+                let durumOzeti = [];
+
+                // Kontrol sonuçlarını özetle
+                if (check.scaffoldingCheck) durumOzeti.push("İskele ✅");
+                else durumOzeti.push("<span style='color:red;'>⚠️</span> İskele Eksik/Hasarlı");
+
+                if (check.electricalCheck) durumOzeti.push("Elektrik ⚡✅");
+                else durumOzeti.push("<span style='color:red;'>⚠️</span> Elektrik Sorunu");
+
+                 if (check.safetyGearCheck) durumOzeti.push("KKD ✅");
+                 else durumOzeti.push("<span style='color:red;'>⚠️</span> KKD Eksikliği");
+                
+                 if (check.siteCleanlinessCheck) durumOzeti.push("Temizlik ✨✅");
+                 else durumOzeti.push("<span style='color:red;'>❌</span> Düzenleme Gerekli");
+
+
+                const row = `
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${check.date}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${check.inspectorName}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">
+                            ${durumOzeti.join('<br>')} <br><small style="display: block; margin-top: 5px;">* Önemli Notlar: ${safetyNotesSummary}</small>
+                        </td>
+                    </tr>
+                `;
+                listEl.innerHTML += row;
+            });
+
+             updateDashboard();
+        }
+
+
+        // ---------------------------------------------
+        // 8. DASHBOARD GÜNCELLEMESİ (Tüm Modüllerden veri toplar)
+        // ---------------------------------------------
+        function updateDashboard() {
+            // İş Takibi verileri
+            const jobs = getJobTasks();
+            const todoCount = jobs.filter(j => j.status === 'todo').length;
+            const progressCount = jobs.filter(j => j.status === 'progress').length;
+            const doneCount = jobs.filter(j => j.status === 'done').length;
+
+            document.getElementById('dashboard-gorev-sayisi').textContent = `${todoCount} bekleyen, ${progressCount} devam eden görev var.`;
+             document.getElementById('total-gorev').textContent = jobs.length;
+             document.getElementById('done-gorev').textContent = doneCount;
+
+
+            // Ürün Talebi verileri
+            const requests = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQUESTS)) || [];
+            const pendingRequests = requests.filter(r => r.status === 'Beklemede').length;
+            document.getElementById('dashboard-talep-sayisi').textContent = `${pendingRequests} adet talep bekliyor.`;
+
+            // Sevkiyat verileri (En son girişi al)
+            const shipments = JSON.parse(localStorage.getItem(STORAGE_KEYS.SHIPMENTS)) || [];
+            let lastShipmentInfo = "Veri yok.";
+             if (shipments.length > 0) {
+                const latest = shipments[shipments.length - 1]; // En son eklenen
+                 lastShipmentInfo = `Tarih: ${latest.date} | Tip: ${latest.movementType} | No: ${latest.trackingId}`;
+             }
+            document.getElementById('dashboard-son-sevkiyat').textContent = lastShipmentInfo;
+        }
+
+
+        // ---------------------------------------------
+        // BAŞLANGIÇ FONKSİYONU
+        // ---------------------------------------------
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tüm modülleri başlat (Verileri yükle)
+            loadProjectInfo();
+             // showSection çağrıldığı anda diğer fonksiyonlar tetiklendiği için ek çağrı yapmaya gerek yok.
+        });
+
+
     </script>
 </body>
 </html>
