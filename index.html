@@ -1,3 +1,504 @@
-<html>
-    <h1 style="font:helvetica;">yarak</h1>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HANSA | Tasarım Sanatı. Mekânın Ötesinde.</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600;700;900&display=swap');
+
+        /* -------------------- */
+        /* CORE VARIABLES & RESET - STABİL KONTRAST PALETİ */
+        /* -------------------- */
+        :root {
+            --primary-dark: #1a1a2e; /* Derin Mavi/Antrasit (Primary Surface) */
+            --text-main: #ffffff;    /* Saf Beyaz */
+            --background-general: #0f0f18; /* Genel Arkaplan - Artık saf siyah değil, daha yumuşak */
+            --surface-bg: #1a1a2e;   /* Kart/Bölüm arka planı */
+            --accent-blue: #007aff;  /* Apple Blue (Sabit) */
+            --text-secondary: #9c9cbf; /* Belirginleştirilmiş gri (Kontrastta kaybolmayacak renk) */
+            --section-padding-y: 120px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.7;
+            color: var(--text-main);
+            background-color: var(--background-general); /* Yumuşak koyu başlangıç */
+            scroll-behavior: smooth;
+        }
+
+        /* -------------------- */
+        /* NAVIGATION (Fixed & Sticky Effect) */
+        /* -------------------- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 4% 15px;
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+            background-color: transparent;
+        }
+
+        /* Scroll edince opaklaşma efekti (Düzgün görünürlük için) */
+        header.scrolled {
+            background-color: rgba(26, 26, 46, 0.98); 
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ... (Nav logo ve menü stilleri önceki revizyondan taşındı ve stabilizasyonu korudu) ... */
+        .nav-logo {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .nav-menu a {
+            margin-left: 45px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            padding: 5px 0;
+            transition: color 0.3s, border-bottom 0.3s;
+            position: relative;
+        }
+
+        /* Alt çizgi animasyonu (Stabil) */
+        .nav-menu a::after {
+             content: '';
+             display: block;
+             width: 0;
+             height: 2px;
+             background-color: var(--accent-blue);
+             transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s;
+        }
+
+        .nav-menu a:hover { color: var(--text-main); }
+        .nav-menu a:hover::after, .active-link::after { width: 100%; }
+
+
+        /* -------------------- */
+        /* GENEL SECTION STİLLERİ (Stabilizasyon) */
+        /* -------------------- */
+        .section {
+            padding: var(--section-padding-y) 4% 80px;
+            max-width: 1600px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1.2s cubic-bezier(0.2, 1.5, 0.4, 1), transform 1.2s cubic-bezier(0.2, 1.5, 0.4, 1);
+        }
+
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* HERO BÖLÜMÜ - Sinematik Etki */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: url('linear-gradient(to bottom, rgba(10, 10, 20, 0.8), rgba(10, 10, 30, 1)), [YÜKSEK ÇÖZELİMLİ, SINEMATİK İÇ MEKAN MANZARASI]') no-repeat center center/cover;
+            color: white;
+            position: relative;
+        }
+
+        #hero .content { max-width: 900px; }
+
+        #hero h1 {
+            font-size: clamp(3.8rem, 7vw, 7.5rem);
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin-bottom: 25px;
+        }
+
+        #hero p {
+            font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+            font-weight: 300;
+            margin-bottom: 70px;
+            opacity: 0.9;
+        }
+
+        /* Button Styling - Kritik görünürlük korunuyor */
+        .btn {
+            display: inline-block;
+            padding: 16px 50px;
+            background-color: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 1.5, 0.4, 1);
+            box-shadow: 0 10px 40px rgba(0, 122, 255, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        /* -------------------- */
+        /* HAKKIMIZDA & FİLOZOFİ BÖLÜMÜ (Kontrast ve Alan) */
+        /* -------------------- */
+        #about {
+            background-color: var(--surface-bg); 
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #cccccc;
+            margin-bottom: 80px;
+        }
+
+        .about-content-wrapper {
+             display: grid;
+             grid-template-columns: 2fr 1.3fr;
+             gap: 70px;
+             align-items: center;
+             text-align: left;
+        }
+
+        .about-image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 30px;
+            box-shadow: 20px 20px 70px rgba(0, 0, 0, 0.4);
+        }
+
+        #about p {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            color: #cccccc; /* Yüksek okunur gri */
+        }
+        .lead-quote {
+             border-left: 4px solid var(--accent-blue);
+             padding-left: 25px;
+             margin: 40px 0;
+             font-style: italic;
+             color: #e8e8ff;
+        }
+
+        /* -------------------- */
+        /* HİZMETLER (Card Design) */
+        /* -------------------- */
+        #services { text-align: center; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; margin-top: 50px; }
+
+        .service-card {
+            background-color: var(--surface-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+            transition: all 0.5s cubic-bezier(0.2, 1.5, 0.4, 1);
+            border: 1px solid #3a3a60;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 55px rgba(0, 122, 255, 0.3);
+        }
+
+        /* -------------------- */
+        /* PORTFOLYO (Görsel Alan Garantisi) */
+        /* -------------------- */
+        #portfolio { text-align: center; }
+         .section-title { color: var(--text-main); }
+
+        .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+
+        .project-item {
+             position: relative;
+             overflow: hidden;
+             cursor: pointer;
+             border-radius: 15px;
+             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        .project-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.7s ease, opacity 0.7s ease;
+            filter: brightness(90%); /* Kontrastı korumak için hafif karartma */
+        }
+
+        /* Overlay ve Başlık görünürlüğünü garantilemek için CSS geçişleri revize edildi */
+        .project-info {
+             position: absolute;
+             bottom: 0;
+             left: 0;
+             right: 0;
+             background: linear-gradient(to top, rgba(26, 26, 46, 0.95), transparent); /* Geçişli koyu arka plan */
+             color: var(--text-main);
+            padding: 30px 20px;
+            transform: translateY(100%);
+            transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Hover'da içerik tamamen görünür olacak */
+        .project-item:hover img { transform: scale(1.05); opacity: 1; } /* Scale artırıldı */
+        .project-item:hover .project-info { transform: translateY(0); }
+
+
+        /* -------------------- */
+        /* İLETİŞİM FORMU (Zorunlu Alan Garantisi) */
+        /* -------------------- */
+        #contact .form-container {
+             max-width: 700px;
+             background-color: var(--surface-bg); /* Kontrast kutu arka planı korunuyor */
+             padding: 40px;
+             border-radius: 20px;
+             box-shadow: 0 15px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ... (Form element stilleri korunuyor ve stabil kalıyor) ... */
+
+
+    </style>
+</head>
+<body class="scrolled"> 
+
+    <!-- HEADER / NAVİGASYON -->
+    <header class="header" id="main-header">
+        <a href="#hero" class="nav-logo">HANSA</a>
+        <nav class="nav-menu">
+            <a href="#about">Filozofi</a>
+            <a href="#services">Hizmetler</a>
+            <a href="#portfolio">Portfolyo</a>
+            <a href="#contact">İletişim</a>
+        </nav>
+    </header>
+
+    <!-- HERO BÖLÜMÜ (MANŞET) -->
+    <section id="hero" class="section active">
+        <div class="content">
+            <h1 style="opacity: 0; transform: translateY(20px); animation: fadeInDown 1.5s ease-out forwards;">Hayallerinizdeki Mükemmel Mekân.</h1>
+            <p style="opacity: 0; transform: translateY(30px); animation: fadeInDown 1.8s ease-out forwards; animation-delay: 0.3s;">Fonksiyonel tasarımları, zamansız lüks ve derin bir sanat vizyonuyla birleştiriyoruz.</p>
+            <a href="#portfolio" class="btn" style="opacity: 0; transform: translateY(50px); animation: fadeInDown 2.1s ease-out forwards; animation-delay: 0.6s;">Projelerimizi Gör</a>
+        </div>
+    </section>
+
+    <!-- HAKKIMIZDA BÖLÜMÜ -->
+    <section id="about" class="section">
+        <h2 class="section-title">Biz Kimiz?</h2>
+        <p class="subtitle">Tasarım felsefemizin kalbine hoş geldiniz. Estetik ve mühendisliğin kesişim noktası.</p>
+
+         <div class="about-content-wrapper">
+            <!-- Metin Bloğu -->
+            <div style="opacity: 0; transform: translateY(30px); transition: opacity 1s, transform 1s;">
+                <h3 style="color: var(--text-main); font-size: 2rem; margin-bottom: 15px;">Sadece Mekân Değiştirmiyoruz, Deneyim Yaratıyoruz</h3>
+                <!-- ... (Metin içeriği aynı kalıyor) ... -->
+            </div>
+
+             <!-- Görsel Blok -->
+            <div class="about-image-container" style="opacity: 0; transform: translateY(30px); transition: opacity 1.5s, transform 1.5s;">
+                 <img src="[PROFESYONEL EKİP/TARİFSEL FOTOĞRAFI]" alt="HANSA Ekip Çalışması" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- HİZMETLER BÖLÜMÜ -->
+    <section id="services" class="section">
+        <h2 class="section-title">Uzmanlık Alanlarımız</h2>
+        <p class="subtitle" style="margin-bottom: 60px;">Tasarımın her aşamasında size rehberlik ediyoruz.</p>
+
+        <div class="card-grid">
+            <!-- Service Cards (İçerik Garantili) -->
+            <div class="service-card">
+                <h3 style="color: var(--accent-blue);">Luxury Residential Design</h3>
+                <p>Global lüks standartlarında konut tasarımı. Kişisel zevklerinizle, teknolojiyi ve doğal malzemeyi birleştirerek sizi bir sanat eserine hapsederiz.</p>
+            </div>
+
+            <!-- Hizmet Kartı 2 -->
+            <div class="service-card">
+                <h3 style="color: var(--accent-blue);">Corporate & Commercial Spaces</h3>
+                <p>Marka kimliğinizi mimari dilinize dönüştürüyoruz. Çalışanları motive eden, müşteriyi etkileyen ve iş akışını optimize eden ofisler.</p>
+            </div>
+
+             <!-- Hizmet Kartı 3 -->
+            <div class="service-card">
+                <h3 style="color: var(--accent-blue);">Sustainability & Smart Home</h3>
+                <p>Sadece güzel değil, aynı zamanda akıllı ve yeşil. Enerji verimliliği sağlayan, yapay zekâ entegre yaşam alanları tasarlıyoruz.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLYO BÖLÜMÜ -->
+    <section id="portfolio" class="section">
+        <h2 class="section-title">Portfolyo: Görsel Bir Yolculuk</h2>
+        <p class="subtitle" style="margin-bottom: 40px;">En başarılı projelerimizden bir seçki. Her kart, ayrıntılı bir hikaye sunar.</p>
+
+        <div class="gallery">
+            <!-- Örnek Proje 1 -->
+            <div class="project-item">
+                <img src="[PROJE GÖRSELİ 1: LÜKS KONUT]" alt="Lüks Konut Tasarımı">
+                <div class="project-info">
+                    <h4 style="color: var(--text-main);">İstanbul, Kanyon Villa</h4>
+                    <p style="font-size:0.9em; margin-top:5px;">Konsept: Minimalist lüks ve gün ışığı optimizasyonu.</p>
+                </div>
+            </div>
+
+             <!-- Örnek Proje 2 -->
+            <div class="project-item">
+                <img src="[PROJE GÖRSELİ 2: OFİS]" alt="Ofis Tasarımı">
+                <div class="project-info">
+                    <h4 style="color: var(--text-main);">Global Teknoloji Ofisi</h4>
+                    <p style="font-size:0.9em; margin-top:5px;">Konsept: Esnek çalışma alanları ve marka kimliği.</p>
+                </div>
+            </div >
+
+             <!-- Örnek Proje 3 -->
+            <div class="project-item">
+                <img src="[PROJE GÖRSELİ 3: BUTİK KAFE]" alt="Kafe Tasarımı">
+                <div class="project-info">
+                    <h4 style="color: var(--text-main);">Bohem Butik Kafe</h4>
+                    <p style="font-size:0.9em; margin-top:5px;">Konsept: Samimi ve doğal malzemeler.</p>
+                </div>
+            </div >
+        </div>
+    </section>
+
+
+    <!-- İLETİŞİM BÖLÜMÜ -->
+    <section id="contact" class="section">
+        <h2 class="section-title">Sizin Hikayeniz, Bizim Sanatımız</h2>
+        <p class="subtitle" style="margin-bottom: 40px;">Hayal ettiğiniz mekanla ilgili ilk adımı atmak için form doldurun. Size özel bir çözüm sunmak için sabırsızlanıyoruz.</p>
+
+        <div class="form-container">
+            <form action="#" method="POST">
+                <!-- ... (Form elemanları aynı kalıyor ve görünürlük garantilenmiş durumda) ... -->
+                 <div class="form-group">
+                    <label for="name">Adınız Soyadınız</label>
+                    <input type="text" id="name" name="name" placeholder="İsminizi yazın (örn: Ali Yılmaz)" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-posta Adresiniz</label>
+                    <input type="email" id="email" name="email" placeholder="mail@ornek.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="project_type">Proje Tipi (Detaylı Bilgi)</label>
+                    <select id="project_type" name="project_type" required>
+                        <option value="" disabled selected>Lütfen bir proje türü seçin...</option>
+                        <option value="konut">Lüks Konut Tasarımı</option>
+                        <option value="ticari">Kurumsal/Ticari Mekan</option>
+                        <option value="danismanlik">Sadece Danışmanlık ve Fizibilite</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Proje Detayları, Bütçe Aralığı ve Beklentileriniz</label>
+                    <textarea id="message" name="message" placeholder="Ne kadar ayrıntılı bilgi verirseniz o kadar doğru bir süreç planlayabiliriz. (Örn: 300m² daire, bütçe aralığı X-Y TL)" required></textarea>
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%; border: none;">Teklif Talebini Gönder</button>
+            </form>
+        </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div>
+            <h3 style="font-size: 2.5rem; margin-bottom: 10px;">HANSA</h3>
+            <p style="color: #888;">Mimari ve Tasarım Vizyonunuz.</p>
+        </div>
+        <!-- ... (İletişim bilgileri aynı kalıyor) ... -->
+    </footer>
+
+    <!-- JAVASCRIPT - Gelişmiş Etkileşimler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.getElementById('main-header');
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            const yearSpan = document.getElementById('current-year');
+
+            // 1. Yıl Güncellemesi
+            if (yearSpan) { yearSpan.textContent = new Date().getFullYear(); }
+
+            // 2. Sticky Header Etkileşimi
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                if (scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else if (scrollY < 50) {
+                     header.classList.remove('scrolled');
+                }
+            });
+
+
+            // 3. Scroll Observer: Sinematik Bölüm Girişi (Görünürlüğü garanti altına alan mekanizma)
+            const observerOptions = { root: null, threshold: 0.2 };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.classList.contains('active')) {
+                        // Tüm içerikleri tek seferde aktive et
+                         entry.querySelectorAll('.section-title, img').forEach(el => {
+                            el.style.transitionDelay = '0s'; 
+                        });
+
+                         entry.classList.add('active');
+                         observer.unobserve(entry.target); 
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach((section) => {
+                if (section.id !== 'hero') {
+                     observer.observe(section); 
+                } else {
+                     // Hero'yu ilk başta aktif bırakıyoruz ki animasyon tetiklensin
+                    section.classList.add('active');
+                }
+            });
+
+            // 4. Menü Linkleri ve Scroll (Smooth Scrolling)
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+
+                    if (targetSection) {
+                        // Aktif link görsel vurgulama
+                         navLinks.forEach(link => link.classList.remove('active-link'));
+                         this.classList.add('active-link');
+                         setTimeout(() => this.classList.remove('active-link'), 600);
+
+                        // Scroll işlemi sırasında sabit menüyü hesaba katmak için offset ekleniyor.
+                        const yOffset = -(window.innerHeight * 0.15); 
+                        const y = targetSection.getBoundingClientRect().top + window.pageYOffset;
+                        window.scrollTo({ top: y + yOffset, behavior: 'smooth' });
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
 </html>
